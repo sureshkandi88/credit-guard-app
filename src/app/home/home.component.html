@@ -1,0 +1,49 @@
+<div class="home-container">
+  <header class="app-header">
+    <div class="header-content">
+      <div class="logo">
+        <h1>Credit Guard</h1>
+      </div>
+      
+      <div class="mobile-toggle" (click)="toggleMobileMenu()">
+        <span class="hamburger-icon" [class.active]="isMobileMenuOpen">
+          <span></span>
+          <span></span>
+          <span></span>
+        </span>
+      </div>
+      
+      <nav class="main-nav" [class.mobile-open]="isMobileMenuOpen">
+        <ul>
+          <li><a href="#">Dashboard</a></li>
+          <li><a href="#">Transactions</a></li>
+          <li><a href="#">Reports</a></li>
+        </ul>
+      </nav>
+      
+      <div class="user-actions" [class.mobile-open]="isMobileMenuOpen">
+        <button (click)="onLogout()" class="logout-btn">Logout</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="home-content">
+    <h2>Welcome, User!</h2>
+    <p>Here's an overview of your financial health.</p>
+    
+    <div class="dashboard-summary">
+      <div class="summary-card">
+        <h3>Total Balance</h3>
+        <p class="amount">$5,420.75</p>
+      </div>
+      <div class="summary-card">
+        <h3>Monthly Expenses</h3>
+        <p class="amount">$1,250.30</p>
+      </div>
+      <div class="summary-card">
+        <h3>Savings Rate</h3>
+        <p class="amount">25%</p>
+      </div>
+    </div>
+  </main>
+</div>

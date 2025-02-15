@@ -1,0 +1,94 @@
+<div class="signup-container">
+  <div class="signup-image">
+    <img src="assets/signup-illustration.svg" alt="Credit Guard Signup">
+  </div>
+  
+  <div class="signup-form">
+    <div class="form-header">
+      <div class="app-title">
+        <h1>Credit Guard</h1>
+        <h2>Create Your Account</h2>
+        <p>Sign up to access Credit Guard's financial management tools</p>
+      </div>
+    </div>
+
+    <form [formGroup]="signupForm" (ngSubmit)="onSubmit()">
+      <div class="form-scroll-container">
+        <div class="form-group">
+          <label for="username">Username</label>
+          <input 
+            type="text" 
+            id="username" 
+            formControlName="username" 
+            placeholder="Choose a username"
+            required
+          >
+          <div *ngIf="signupForm.get('username')?.invalid && signupForm.get('username')?.touched" class="error-message">
+            <span *ngIf="signupForm.get('username')?.errors?.['required']">Username is required</span>
+            <span *ngIf="signupForm.get('username')?.errors?.['minlength']">Username must be at least 4 characters</span>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="email">Email Address</label>
+          <input 
+            type="email" 
+            id="email" 
+            formControlName="email" 
+            placeholder="Enter your email"
+            required
+          >
+          <div *ngIf="signupForm.get('email')?.invalid && signupForm.get('email')?.touched" class="error-message">
+            <span *ngIf="signupForm.get('email')?.errors?.['required']">Email is required</span>
+            <span *ngIf="signupForm.get('email')?.errors?.['email']">Invalid email format</span>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="password">Password</label>
+          <input 
+            type="password" 
+            id="password" 
+            formControlName="password" 
+            placeholder="Create a strong password"
+            required
+          >
+          <div *ngIf="signupForm.get('password')?.invalid && signupForm.get('password')?.touched" class="error-message">
+            <span *ngIf="signupForm.get('password')?.errors?.['required']">Password is required</span>
+            <span *ngIf="signupForm.get('password')?.errors?.['minlength']">Password must be at least 8 characters</span>
+            <span *ngIf="signupForm.get('password')?.errors?.['pattern']">Password must include uppercase, lowercase, number, and special character</span>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="confirmPassword">Confirm Password</label>
+          <input 
+            type="password" 
+            id="confirmPassword" 
+            formControlName="confirmPassword" 
+            placeholder="Repeat your password"
+            required
+          >
+          <div *ngIf="signupForm.get('confirmPassword')?.invalid && signupForm.get('confirmPassword')?.touched" class="error-message">
+            <span *ngIf="signupForm.get('confirmPassword')?.errors?.['passwordMismatch']">Passwords do not match</span>
+          </div>
+        </div>
+
+        <div *ngIf="signupStatus === 'success'" class="success-message">
+          Account created successfully! Redirecting to login...
+        </div>
+
+        <div *ngIf="signupStatus === 'error'" class="error-message">
+          Unable to create account. Please try again.
+        </div>
+      </div>
+
+      <div class="form-footer">
+        <button type="submit" [disabled]="signupForm.invalid">Create Account</button>
+        <div class="additional-options">
+          <a href="#" (click)="navigateToLogin()">Already have an account? Login</a>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>

@@ -1,0 +1,53 @@
+<div class="login-container">
+  <div class="login-image">
+    <img src="assets/login-illustration.svg" alt="Credit Guard Login">
+  </div>
+  
+  <div class="login-form">
+    <div class="app-title">
+      <h1>Credit Guard</h1>
+      <h2>Login to Your Account</h2>
+    </div>
+
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+      <div class="form-group">
+        <label for="username">Username</label>
+        <input 
+          type="text" 
+          id="username" 
+          formControlName="username" 
+          placeholder="Enter your username"
+          required
+        >
+        <div *ngIf="loginForm.get('username')?.invalid && loginForm.get('username')?.touched" class="error-message">
+          <span *ngIf="loginForm.get('username')?.errors?.['required']">Username is required</span>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input 
+          type="password" 
+          id="password" 
+          formControlName="password" 
+          placeholder="Enter your password"
+          required
+        >
+        <div *ngIf="loginForm.get('password')?.invalid && loginForm.get('password')?.touched" class="error-message">
+          <span *ngIf="loginForm.get('password')?.errors?.['required']">Password is required</span>
+        </div>
+      </div>
+
+      <div *ngIf="loginError" class="error-message">
+        Invalid username or password
+      </div>
+
+      <button type="submit" [disabled]="loginForm.invalid">Login</button>
+
+      <div class="additional-options">
+        <a href="#" (click)="navigateToForgotPassword($event)">Forgot Password?</a>
+        <a href="#" (click)="navigateToSignUp($event)">Sign Up</a>
+      </div>
+    </form>
+  </div>
+</div>
