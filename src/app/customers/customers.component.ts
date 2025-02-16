@@ -1,21 +1,18 @@
 import { Component } from '@angular/core';
-import { CommonModule, CurrencyPipe } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { Router } from '@angular/router';
 import { AuthService } from '../services/auth.service';
 
 @Component({
-  selector: 'app-home',
-  templateUrl: './home.component.html',
-  styleUrls: ['./home.component.scss'],
+  selector: 'app-customers',
   standalone: true,
-  imports: [CommonModule, CurrencyPipe, RouterModule]
+  imports: [CommonModule, RouterModule],
+  templateUrl: './customers.component.html',
+  styleUrls: ['./customers.component.scss']
 })
-export class HomeComponent {
+export class CustomersComponent {
   isMobileMenuOpen = false;
-  
-  totalBalance = 5420.75;
-  monthlyExpenses = 1250.30;
 
   constructor(
     private authService: AuthService,

@@ -1,4 +1,4 @@
-<div class="home-container">
+<div class="customers-container">
   <header class="app-header">
     <div class="header-content">
       <div class="logo">
@@ -28,23 +28,8 @@
     </div>
   </header>
 
-  <main class="home-content">
-    <h2>Welcome, User!</h2>
-    <p>Here's an overview of your financial health.</p>
-    
-    <div class="dashboard-summary">
-      <div class="summary-card">
-        <h3>Total Balance</h3>
-        <p class="amount">{{ totalBalance | currency:'INR':'symbol':'1.2-2' }}</p>
-      </div>
-      <div class="summary-card">
-        <h3>Monthly Expenses</h3>
-        <p class="amount">{{ monthlyExpenses | currency:'INR':'symbol':'1.2-2' }}</p>
-      </div>
-      <div class="summary-card">
-        <h3>Savings Rate</h3>
-        <p class="amount">25%</p>
-      </div>
-    </div>
+  <main class="customers-content">
+    <h2>Customers</h2>
+    <p>List of customers will be displayed here.</p>
   </main>
 </div>
