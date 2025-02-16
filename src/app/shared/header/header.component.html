@@ -1,0 +1,27 @@
+<header class="app-header">
+  <div class="header-content">
+    <div class="logo">
+      <h1>{{ title }}</h1>
+    </div>
+    
+    <div class="mobile-toggle" (click)="toggleMobileMenu()">
+      <span class="hamburger-icon" [class.active]="isMobileMenuOpen">
+        <span></span>
+        <span></span>
+        <span></span>
+      </span>
+    </div>
+    
+    <nav *ngIf="showNavigation" class="main-nav" [class.mobile-open]="isMobileMenuOpen">
+      <ul>
+        <li><a href="#">Dashboard</a></li>
+        <li><a href="#">Transactions</a></li>
+        <li><a href="#">Reports</a></li>
+      </ul>
+    </nav>
+    
+    <div *ngIf="showLogout" class="user-actions" [class.mobile-open]="isMobileMenuOpen">
+      <button (click)="onLogout()" class="logout-btn">Logout</button>
+    </div>
+  </div>
+</header>

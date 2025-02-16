@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="200" height="60" viewBox="0 0 200 60" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="logoGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#667EEA;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#5A67D8;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <path d="M30 10 L50 20 Q55 25, 50 30 L30 40 Q25 35, 25 30 Z" fill="url(#logoGradient)" />
+  
+  <text x="60" y="35" font-family="Arial, sans-serif" font-size="24" font-weight="bold" fill="url(#logoGradient)">
+    Credit Guard
+  </text>
+</svg>
