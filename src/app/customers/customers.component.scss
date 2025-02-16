@@ -1,7 +1,161 @@
 @use '../../styles/variables' as vars;
 
-.customers-content {
-  padding: vars.$spacing-medium;
+.customers-container {
   max-width: 1200px;
   margin: 0 auto;
+  padding: 1rem;
+
+  .customers-content {
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    padding: 1.5rem;
+
+    .customers-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+
+      h2 {
+        margin: 0;
+        color: vars.$primary-color;
+      }
+
+      .search-add-section {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+
+        .search-container {
+          position: relative;
+
+          .search-input {
+            padding: 0.5rem 1rem;
+            border: 1px solid vars.$border-color;
+            border-radius: 4px;
+            width: 250px;
+            transition: border-color 0.3s ease;
+
+            &:focus {
+              outline: none;
+              border-color: vars.$primary-color;
+            }
+          }
+        }
+
+        .add-customer-btn {
+          background-color: vars.$secondary-color;
+          color: white;
+          border: none;
+          padding: 0.5rem 1rem;
+          border-radius: 4px;
+          cursor: pointer;
+          transition: background-color 0.3s ease;
+
+          &:hover {
+            background-color: darken(vars.$secondary-color, 10%);
+          }
+        }
+      }
+    }
+
+    .customers-list {
+      table {
+        width: 100%;
+        border-collapse: collapse;
+
+        thead {
+          background-color: vars.$primary-color;
+          color: white;
+
+          th {
+            padding: 0.75rem;
+            text-align: left;
+          }
+        }
+
+        tbody {
+          tr {
+            border-bottom: 1px solid vars.$border-color;
+            transition: background-color 0.3s ease;
+
+            &:hover {
+              background-color: rgba(vars.$primary-color, 0.05);
+            }
+
+            td {
+              padding: 0.75rem;
+            }
+
+            .action-buttons {
+              display: flex;
+              gap: 0.5rem;
+
+              .edit-btn, .delete-btn {
+                padding: 0.25rem 0.5rem;
+                border: none;
+                border-radius: 4px;
+                cursor: pointer;
+                transition: background-color 0.3s ease;
+              }
+
+              .edit-btn {
+                background-color: vars.$secondary-color;
+                color: white;
+
+                &:hover {
+                  background-color: darken(vars.$secondary-color, 10%);
+                }
+              }
+
+              .delete-btn {
+                background-color: #dc3545;
+                color: white;
+
+                &:hover {
+                  background-color: darken(#dc3545, 10%);
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+// Responsive Adjustments
+@media (max-width: vars.$breakpoint-mobile) {
+  .customers-container {
+    padding: 0.5rem;
+
+    .customers-content {
+      .customers-header {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 1rem;
+
+        .search-add-section {
+          flex-direction: column;
+
+          .search-input {
+            width: 100%;
+          }
+
+          .add-customer-btn {
+            width: 100%;
+          }
+        }
+      }
+
+      .customers-list {
+        overflow-x: auto;
+
+        table {
+          min-width: 600px;
+        }
+      }
+    }
+  }
 }

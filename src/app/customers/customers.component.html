@@ -2,7 +2,196 @@
   <app-header activeRoute="customers"></app-header>
 
   <main class="customers-content">
-    <h2>Customers</h2>
-    <p>List of customers will be displayed here.</p>
+    <div class="customers-header">
+      <h2>Customers</h2>
+      <div class="search-add-section">
+        <div class="search-container">
+          <input 
+            type="text" 
+            [(ngModel)]="searchQuery" 
+            (input)="searchCustomers()" 
+            placeholder="Search by name or Aadhaar"
+            class="search-input"
+          >
+        </div>
+        <button 
+          class="add-customer-btn" 
+          (click)="openAddCustomerModal()"
+          data-bs-toggle="modal" 
+          data-bs-target="#customerModal"
+        >
+          Add Customer
+        </button>
+      </div>
+    </div>
+
+    <div class="customers-list">
+      <table>
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Phone Number</th>
+            <th>Aadhaar Number</th>
+            <th>City</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let customer of customers">
+            <td>{{ customer.firstName }} {{ customer.lastName }}</td>
+            <td>{{ customer.phoneNumber }}</td>
+            <td>{{ customer.aadhaarNumber }}</td>
+            <td>{{ customer.address.city }}</td>
+            <td>
+              <div class="action-buttons">
+                <button 
+                  class="edit-btn" 
+                  (click)="openEditCustomerModal(customer)"
+                  data-bs-toggle="modal" 
+                  data-bs-target="#customerModal"
+                >
+                  Edit
+                </button>
+                <button 
+                  class="delete-btn" 
+                  (click)="deleteCustomer(customer.id || '')"
+                >
+                  Delete
+                </button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Customer Modal -->
+    <div class="modal fade" id="customerModal" tabindex="-1" aria-labelledby="customerModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="customerModalLabel">
+              {{ isEditMode ? 'Edit Customer' : 'Add Customer' }}
+            </h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <form [formGroup]="customerForm" (ngSubmit)="submitCustomer()">
+              <div class="row">
+                <div class="col-md-6 mb-3">
+                  <label for="firstName" class="form-label">First Name</label>
+                  <input 
+                    type="text" 
+                    class="form-control" 
+                    id="firstName" 
+                    formControlName="firstName"
+                    [ngClass]="{'is-invalid': firstNameErrors}"
+                  >
+                  <div *ngIf="firstNameErrors" class="invalid-feedback">
+                    First name is required and must be at least 2 characters.
+                  </div>
+                </div>
+                <div class="col-md-6 mb-3">
+                  <label for="lastName" class="form-label">Last Name</label>
+                  <input 
+                    type="text" 
+                    class="form-control" 
+                    id="lastName" 
+                    formControlName="lastName"
+                    [ngClass]="{'is-invalid': lastNameErrors}"
+                  >
+                  <div *ngIf="lastNameErrors" class="invalid-feedback">
+                    Last name is required and must be at least 2 characters.
+                  </div>
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="col-md-6 mb-3">
+                  <label for="phoneNumber" class="form-label">Phone Number</label>
+                  <input 
+                    type="text" 
+                    class="form-control" 
+                    id="phoneNumber" 
+                    formControlName="phoneNumber"
+                    [ngClass]="{'is-invalid': phoneNumberErrors}"
+                  >
+                  <div *ngIf="phoneNumberErrors" class="invalid-feedback">
+                    Invalid phone number. Must be 10 digits starting with 6-9.
+                  </div>
+                </div>
+                <div class="col-md-6 mb-3">
+                  <label for="aadhaarNumber" class="form-label">Aadhaar Number</label>
+                  <input 
+                    type="text" 
+                    class="form-control" 
+                    id="aadhaarNumber" 
+                    formControlName="aadhaarNumber"
+                    [ngClass]="{'is-invalid': aadhaarNumberErrors}"
+                  >
+                  <div *ngIf="aadhaarNumberErrors" class="invalid-feedback">
+                    Invalid Aadhaar number. Must be 12 digits.
+                  </div>
+                </div>
+              </div>
+
+              <div formGroupName="address">
+                <div class="row">
+                  <div class="col-12 mb-3">
+                    <label for="street" class="form-label">Street Address</label>
+                    <input 
+                      type="text" 
+                      class="form-control" 
+                      id="street" 
+                      formControlName="street"
+                    >
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-4 mb-3">
+                    <label for="city" class="form-label">City</label>
+                    <input 
+                      type="text" 
+                      class="form-control" 
+                      id="city" 
+                      formControlName="city"
+                    >
+                  </div>
+                  <div class="col-md-4 mb-3">
+                    <label for="state" class="form-label">State</label>
+                    <input 
+                      type="text" 
+                      class="form-control" 
+                      id="state" 
+                      formControlName="state"
+                    >
+                  </div>
+                  <div class="col-md-4 mb-3">
+                    <label for="pinCode" class="form-label">Pin Code</label>
+                    <input 
+                      type="text" 
+                      class="form-control" 
+                      id="pinCode" 
+                      formControlName="pinCode"
+                    >
+                  </div>
+                </div>
+              </div>
+
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button 
+                  type="submit" 
+                  class="btn btn-primary" 
+                  [disabled]="customerForm.invalid"
+                >
+                  {{ isEditMode ? 'Update Customer' : 'Add Customer' }}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
   </main>
 </div>

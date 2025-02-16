@@ -9,7 +9,7 @@ import { AuthService } from './auth.service';
   providedIn: 'root'
 })
 export class CustomerService {
-  private apiUrl = environment.apiBaseUrl + '/customers';
+  private apiUrl = environment.apiBaseUrl + '/Customer';
 
   constructor(
     private http: HttpClient,
