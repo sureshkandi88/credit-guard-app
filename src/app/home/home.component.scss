@@ -12,16 +12,17 @@
 }
 
 .home-container {
+  position: relative;
+  height: 100vh;
   display: flex;
   flex-direction: column;
-  height: 100%;
-  width: 100%;
 }
 
 .app-header {
   background-color: white;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
   z-index: 10;
+  position: relative;
 
   .header-content {
     display: flex;
@@ -60,6 +61,7 @@
       right: 20px;
       top: 50%;
       transform: translateY(-50%);
+      z-index: 20;
     }
 
     .hamburger-icon {
@@ -111,13 +113,25 @@
 
   .main-nav {
     @media (max-width: 768px) {
-      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
       width: 100%;
-      order: 3;
-      margin-top: 15px;
-
+      height: 100%;
+      background-color: rgba(255, 255, 255, 0.95);
+      display: none;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      z-index: 15;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.3s ease, visibility 0.3s ease;
+      
       &.mobile-open {
-        display: block;
+        display: flex;
+        opacity: 1;
+        visibility: visible;
       }
     }
 
@@ -131,7 +145,7 @@
       @media (max-width: 768px) {
         flex-direction: column;
         align-items: center;
-        gap: 15px;
+        gap: 30px;
       }
 
       li {
@@ -141,9 +155,10 @@
           font-weight: 500;
           transition: color 0.3s ease;
           position: relative;
+          font-size: 1.1rem;
 
-          @media (max-width: 480px) {
-            font-size: 0.9rem;
+          @media (max-width: 768px) {
+            font-size: 1.5rem;
           }
 
           &:hover {
@@ -168,35 +183,43 @@
 
   .user-actions {
     @media (max-width: 768px) {
-      display: none;
+      position: fixed;
+      bottom: 0;
+      left: 0;
       width: 100%;
-      order: 4;
-      margin-top: 15px;
-      text-align: center;
-
+      padding: 20px;
+      background-color: white;
+      box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.05);
+      display: none;
+      z-index: 15;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.3s ease, visibility 0.3s ease;
+      
       &.mobile-open {
         display: block;
+        opacity: 1;
+        visibility: visible;
       }
     }
 
     .logout-btn {
+      width: 100%;
       background-color: #667eea;
       color: white;
       border: none;
-      padding: 10px 20px;
-      border-radius: 6px;
-      font-weight: 500;
+      padding: 15px;
+      border-radius: 8px;
+      font-weight: 600;
       cursor: pointer;
       transition: background-color 0.3s ease, transform 0.2s ease;
 
-      @media (max-width: 480px) {
-        padding: 8px 15px;
-        font-size: 0.9rem;
+      @media (max-width: 768px) {
+        font-size: 1.1rem;
       }
 
       &:hover {
         background-color: #5a67d8;
-        transform: translateY(-2px);
       }
     }
   }
@@ -205,6 +228,7 @@
 .home-content {
   flex-grow: 1;
   padding: 40px;
+  background-color: #f4f6f9;
   overflow-y: auto;
 
   @media (max-width: 768px) {
