@@ -3,7 +3,7 @@ import { provideRouter } from '@angular/router';
 import { routes } from './app.routes';
 import { provideHttpClient, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { AuthInterceptor } from './interceptors/auth.interceptor';
-import { ReactiveFormsModule } from '@angular/forms';
+import { provideReactiveFormsModule } from './utils/reactive-forms.provider';
 
 // Custom Global Error Handler
 class GlobalErrorHandler implements ErrorHandler {
@@ -17,7 +17,7 @@ class GlobalErrorHandler implements ErrorHandler {
 export const appConfig: ApplicationConfig = {
   providers: [
     provideRouter(routes),
-    ReactiveFormsModule,
+    provideReactiveFormsModule(),
     provideHttpClient(),
     {
       provide: HTTP_INTERCEPTORS,
