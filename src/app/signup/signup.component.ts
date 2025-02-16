@@ -2,7 +2,8 @@ import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { AuthService } from '../auth.service';
+import { AuthService } from '../services/auth.service';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-signup',
@@ -14,6 +15,16 @@ import { AuthService } from '../auth.service';
 export class SignupComponent {
   signupForm: FormGroup;
   signupStatus: 'idle' | 'success' | 'error' = 'idle';
+  errorMessage: string = '';
+
+  // Predefined list of secret questions
+  secretQuestions: string[] = [
+    'What was the name of your first pet?',
+    'In what city were you born?',
+    'What is your mother\'s maiden name?',
+    'What was the name of your elementary school?',
+    'What is your favorite childhood movie?'
+  ];
 
   constructor(
     private fb: FormBuilder,
@@ -21,14 +32,32 @@ export class SignupComponent {
     private router: Router
   ) {
     this.signupForm = this.fb.group({
-      username: ['', [Validators.required, Validators.minLength(4)]],
-      email: ['', [Validators.required, Validators.email]],
+      username: ['', [
+        Validators.required, 
+        Validators.minLength(4),
+        Validators.pattern(/^[a-zA-Z0-9_]+$/)
+      ]],
+      email: ['', [
+        Validators.required, 
+        Validators.email
+      ]],
+      firstName: ['', [
+        Validators.maxLength(50)
+      ]],
+      lastName: ['', [
+        Validators.maxLength(50)
+      ]],
       password: ['', [
         Validators.required, 
-        Validators.minLength(8),
-        Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/)
+        Validators.minLength(8)
       ]],
-      confirmPassword: ['', Validators.required]
+      confirmPassword: ['', Validators.required],
+      secretQuestion: ['', Validators.required],
+      secretAnswer: ['', [
+        Validators.required,
+        Validators.minLength(3),
+        Validators.maxLength(100)
+      ]]
     }, { validators: this.passwordMatchValidator });
   }
 
@@ -45,20 +74,45 @@ export class SignupComponent {
   }
 
   onSubmit() {
-    if (this.signupForm.valid) {
-      const { username, email, password } = this.signupForm.value;
-      const signupSuccess = this.authService.signup(username, email, password);
+    if (this.signupForm.invalid) {
+      return;
+    }
 
-      if (signupSuccess) {
+    this.signupStatus = 'idle';
+    this.errorMessage = '';
+
+    const { 
+      username, 
+      email, 
+      password, 
+      firstName, 
+      lastName,
+      secretQuestion,
+      secretAnswer
+    } = this.signupForm.value;
+
+    this.authService.signup(
+      username, 
+      email, 
+      password, 
+      secretQuestion,
+      secretAnswer,
+      firstName || undefined, 
+      lastName || undefined
+    ).subscribe({
+      next: (response) => {
         this.signupStatus = 'success';
-        // Optional: Add a timeout to redirect or show login
+        // Optional: Add a timeout to redirect or show success message
         setTimeout(() => {
           this.router.navigate(['/login']);
         }, 3000);
-      } else {
+      },
+      error: (error: HttpErrorResponse) => {
         this.signupStatus = 'error';
+        this.errorMessage = error.error?.message || 'An unexpected error occurred during signup';
+        console.error('Signup error:', error);
       }
-    }
+    });
   }
 
   navigateToLogin() {

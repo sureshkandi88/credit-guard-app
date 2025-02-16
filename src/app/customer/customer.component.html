@@ -1,0 +1,184 @@
+<div class="customer-container">
+  <div class="customer-form-section">
+    <h2>{{ isEditMode ? 'Edit Customer' : 'Add New Customer' }}</h2>
+    
+    <form [formGroup]="customerForm" (ngSubmit)="onSubmit()" class="customer-form">
+      <div class="form-row">
+        <div class="form-group">
+          <label for="firstName">First Name</label>
+          <input 
+            type="text" 
+            id="firstName" 
+            formControlName="firstName" 
+            placeholder="Enter first name"
+          >
+          <div *ngIf="customerForm.get('firstName')?.invalid && customerForm.get('firstName')?.touched" class="error-message">
+            First name is required and must be at least 2 characters
+          </div>
+        </div>
+        
+        <div class="form-group">
+          <label for="lastName">Last Name</label>
+          <input 
+            type="text" 
+            id="lastName" 
+            formControlName="lastName" 
+            placeholder="Enter last name"
+          >
+          <div *ngIf="customerForm.get('lastName')?.invalid && customerForm.get('lastName')?.touched" class="error-message">
+            Last name is required and must be at least 2 characters
+          </div>
+        </div>
+      </div>
+      
+      <div class="form-row">
+        <div class="form-group">
+          <label for="phoneNumber">Phone Number</label>
+          <input 
+            type="tel" 
+            id="phoneNumber" 
+            formControlName="phoneNumber" 
+            placeholder="Enter phone number"
+          >
+          <div *ngIf="customerForm.get('phoneNumber')?.invalid && customerForm.get('phoneNumber')?.touched" class="error-message">
+            Invalid phone number (10 digits, starting with 6-9)
+          </div>
+        </div>
+        
+        <div class="form-group">
+          <label for="aadhaarNumber">Aadhaar Number</label>
+          <input 
+            type="text" 
+            id="aadhaarNumber" 
+            formControlName="aadhaarNumber" 
+            placeholder="Enter Aadhaar number"
+          >
+          <div *ngIf="customerForm.get('aadhaarNumber')?.invalid && customerForm.get('aadhaarNumber')?.touched" class="error-message">
+            Invalid Aadhaar number (12 digits)
+          </div>
+        </div>
+      </div>
+      
+      <div formGroupName="address" class="address-section">
+        <h3>Address Details</h3>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="street">Street</label>
+            <input 
+              type="text" 
+              id="street" 
+              formControlName="street" 
+              placeholder="Enter street address"
+            >
+            <div *ngIf="customerForm.get('address.street')?.invalid && customerForm.get('address.street')?.touched" class="error-message">
+              Street address is required
+            </div>
+          </div>
+          
+          <div class="form-group">
+            <label for="city">City</label>
+            <input 
+              type="text" 
+              id="city" 
+              formControlName="city" 
+              placeholder="Enter city"
+            >
+            <div *ngIf="customerForm.get('address.city')?.invalid && customerForm.get('address.city')?.touched" class="error-message">
+              City is required
+            </div>
+          </div>
+        </div>
+        
+        <div class="form-row">
+          <div class="form-group">
+            <label for="state">State</label>
+            <input 
+              type="text" 
+              id="state" 
+              formControlName="state" 
+              placeholder="Enter state"
+            >
+            <div *ngIf="customerForm.get('address.state')?.invalid && customerForm.get('address.state')?.touched" class="error-message">
+              State is required
+            </div>
+          </div>
+          
+          <div class="form-group">
+            <label for="pinCode">Pin Code</label>
+            <input 
+              type="text" 
+              id="pinCode" 
+              formControlName="pinCode" 
+              placeholder="Enter pin code"
+            >
+            <div *ngIf="customerForm.get('address.pinCode')?.invalid && customerForm.get('address.pinCode')?.touched" class="error-message">
+              Invalid pin code (6 digits)
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="form-row photo-upload">
+        <div class="form-group">
+          <label for="photo">Customer Photo</label>
+          <input 
+            type="file" 
+            id="photo" 
+            (change)="onPhotoSelected($event, 'photo')"
+            accept="image/*"
+          >
+          <div *ngIf="photoPreview" class="photo-preview">
+            <img [src]="photoPreview" alt="Customer Photo Preview">
+          </div>
+        </div>
+        
+        <div class="form-group">
+          <label for="aadhaarPhoto">Aadhaar Photo</label>
+          <input 
+            type="file" 
+            id="aadhaarPhoto" 
+            (change)="onPhotoSelected($event, 'aadhaarPhoto')"
+            accept="image/*"
+          >
+          <div *ngIf="aadhaarPhotoPreview" class="photo-preview">
+            <img [src]="aadhaarPhotoPreview" alt="Aadhaar Photo Preview">
+          </div>
+        </div>
+      </div>
+      
+      <div class="form-actions">
+        <button type="submit" [disabled]="customerForm.invalid">
+          {{ isEditMode ? 'Update Customer' : 'Add Customer' }}
+        </button>
+        <button type="button" (click)="resetForm()" class="reset-btn">
+          {{ isEditMode ? 'Cancel' : 'Reset' }}
+        </button>
+      </div>
+    </form>
+  </div>
+  
+  <div class="customer-list-section">
+    <h2>Customer List</h2>
+    <table class="customer-table">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Phone Number</th>
+          <th>Aadhaar Number</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let customer of customers">
+          <td>{{ customer.firstName }} {{ customer.lastName }}</td>
+          <td>{{ customer.phoneNumber }}</td>
+          <td>{{ customer.aadhaarNumber }}</td>
+          <td>
+            <button (click)="editCustomer(customer)" class="edit-btn">Edit</button>
+            <button (click)="deleteCustomer(customer.id!)" class="delete-btn">Delete</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
