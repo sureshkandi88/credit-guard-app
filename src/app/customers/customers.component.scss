@@ -1,7 +1,7 @@
-@import '../home/home.component.scss';
+@use '../../styles/variables' as vars;
 
 .customers-content {
-  padding: 20px;
+  padding: vars.$spacing-medium;
   max-width: 1200px;
   margin: 0 auto;
 }

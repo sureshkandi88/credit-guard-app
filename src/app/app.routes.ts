@@ -5,6 +5,9 @@ import { ForgotPasswordComponent } from './forgot-password/forgot-password.compo
 import { SignupComponent } from './signup/signup.component';
 import { AuthGuard } from './auth.guard';
 import { CustomersComponent } from './customers/customers.component';
+import { DashboardComponent } from './dashboard/dashboard.component';
+import { TransactionsComponent } from './transactions/transactions.component';
+import { ReportsComponent } from './reports/reports.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: '/login', pathMatch: 'full' },
@@ -14,6 +17,21 @@ export const routes: Routes = [
   { 
     path: 'home', 
     component: HomeComponent, 
+    canActivate: [AuthGuard] 
+  },
+  { 
+    path: 'dashboard', 
+    component: DashboardComponent, 
+    canActivate: [AuthGuard] 
+  },
+  { 
+    path: 'transactions', 
+    component: TransactionsComponent, 
+    canActivate: [AuthGuard] 
+  },
+  { 
+    path: 'reports', 
+    component: ReportsComponent, 
     canActivate: [AuthGuard] 
   },
   { 

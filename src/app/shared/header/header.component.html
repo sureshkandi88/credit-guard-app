@@ -1,7 +1,7 @@
 <header class="app-header">
   <div class="header-content">
     <div class="logo">
-      <h1>{{ title }}</h1>
+      <h1>Credit Guard</h1>
     </div>
     
     <div class="mobile-toggle" (click)="toggleMobileMenu()">
@@ -12,16 +12,17 @@
       </span>
     </div>
     
-    <nav *ngIf="showNavigation" class="main-nav" [class.mobile-open]="isMobileMenuOpen">
+    <nav class="main-nav" [class.mobile-open]="isMobileMenuOpen">
       <ul>
-        <li><a href="#">Dashboard</a></li>
-        <li><a routerLink="/customers">Customers</a></li>
-        <li><a href="#">Transactions</a></li>
-        <li><a href="#">Reports</a></li>
+        <li><a routerLink="/home" [class.active]="isRouteActive('home')" (click)="closeMobileMenu()">Home</a></li>
+        <li><a routerLink="/dashboard" [class.active]="isRouteActive('dashboard')" (click)="closeMobileMenu()">Dashboard</a></li>
+        <li><a routerLink="/transactions" [class.active]="isRouteActive('transactions')" (click)="closeMobileMenu()">Transactions</a></li>
+        <li><a routerLink="/reports" [class.active]="isRouteActive('reports')" (click)="closeMobileMenu()">Reports</a></li>
+        <li><a routerLink="/customers" [class.active]="isRouteActive('customers')" (click)="closeMobileMenu()">Customers</a></li>
       </ul>
     </nav>
     
-    <div *ngIf="showLogout" class="user-actions" [class.mobile-open]="isMobileMenuOpen">
+    <div class="user-actions" [class.mobile-open]="isMobileMenuOpen">
       <button (click)="onLogout()" class="logout-btn">Logout</button>
     </div>
   </div>

@@ -1,32 +1,5 @@
 <div class="customers-container">
-  <header class="app-header">
-    <div class="header-content">
-      <div class="logo">
-        <h1>Credit Guard</h1>
-      </div>
-      
-      <div class="mobile-toggle" (click)="toggleMobileMenu()">
-        <span class="hamburger-icon" [class.active]="isMobileMenuOpen">
-          <span></span>
-          <span></span>
-          <span></span>
-        </span>
-      </div>
-      
-      <nav class="main-nav" [class.mobile-open]="isMobileMenuOpen">
-        <ul>
-          <li><a routerLink="/dashboard">Dashboard</a></li>
-          <li><a routerLink="/transactions">Transactions</a></li>
-          <li><a routerLink="/reports">Reports</a></li>
-          <li><a routerLink="/customers">Customers</a></li>
-        </ul>
-      </nav>
-      
-      <div class="user-actions" [class.mobile-open]="isMobileMenuOpen">
-        <button (click)="onLogout()" class="logout-btn">Logout</button>
-      </div>
-    </div>
-  </header>
+  <app-header activeRoute="customers"></app-header>
 
   <main class="customers-content">
     <h2>Customers</h2>

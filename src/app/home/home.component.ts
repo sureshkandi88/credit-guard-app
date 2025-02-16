@@ -3,13 +3,14 @@ import { CommonModule, CurrencyPipe } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { Router } from '@angular/router';
 import { AuthService } from '../services/auth.service';
+import { HeaderComponent } from '../shared/header/header.component';
 
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss'],
   standalone: true,
-  imports: [CommonModule, CurrencyPipe, RouterModule]
+  imports: [CommonModule, CurrencyPipe, RouterModule, HeaderComponent]
 })
 export class HomeComponent {
   isMobileMenuOpen = false;

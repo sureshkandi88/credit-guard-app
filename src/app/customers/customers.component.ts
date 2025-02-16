@@ -3,13 +3,14 @@ import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { Router } from '@angular/router';
 import { AuthService } from '../services/auth.service';
+import { HeaderComponent } from '../shared/header/header.component';
 
 @Component({
   selector: 'app-customers',
-  standalone: true,
-  imports: [CommonModule, RouterModule],
   templateUrl: './customers.component.html',
-  styleUrls: ['./customers.component.scss']
+  styleUrls: ['./customers.component.scss'],
+  standalone: true,
+  imports: [CommonModule, RouterModule, HeaderComponent]
 })
 export class CustomersComponent {
   isMobileMenuOpen = false;
