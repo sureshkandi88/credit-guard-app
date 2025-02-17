@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpEventType } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '@environments/environment';
 import { Customer } from '../models/customer.model';
@@ -20,7 +20,6 @@ export class CustomerService {
   private getHeaders(): HttpHeaders {
     const token = this.authService.getAuthToken();
     return new HttpHeaders({
-      'Content-Type': 'application/json',
       'Authorization': `Bearer ${token}`
     });
   }
@@ -35,14 +34,34 @@ export class CustomerService {
     return this.http.get<Customer>(`${this.apiUrl}/${id}`, { headers: this.getHeaders() });
   }
 
-  // Create a new customer
-  createCustomer(customer: Customer): Observable<Customer> {
-    return this.http.post<Customer>(this.apiUrl, customer, { headers: this.getHeaders() });
+  // Create a new customer with file upload support
+  createCustomer(customerData: FormData): Observable<Customer> {
+    // Log FormData contents for debugging
+    customerData.forEach((value, key) => {
+      console.log(`FormData Entry - ${key}:`, value);
+    });
+
+    // Create headers without explicitly setting Content-Type
+    const headers = this.getHeaders();
+
+    return this.http.post<Customer>(`${this.apiUrl}`, customerData, { 
+      headers: headers
+    });
   }
 
-  // Update an existing customer
-  updateCustomer(id: string, customer: Customer): Observable<Customer> {
-    return this.http.put<Customer>(`${this.apiUrl}/${id}`, customer, { headers: this.getHeaders() });
+  // Update an existing customer with file upload support
+  updateCustomer(customerId: string, customerData: FormData): Observable<Customer> {
+    // Log FormData contents for debugging
+    customerData.forEach((value, key) => {
+      console.log(`FormData Entry - ${key}:`, value);
+    });
+
+    // Create headers without explicitly setting Content-Type
+    const headers = this.getHeaders();
+
+    return this.http.put<Customer>(`${this.apiUrl}/${customerId}`, customerData, { 
+      headers: headers
+    });
   }
 
   // Delete a customer

@@ -63,8 +63,8 @@
             <span class="detail-value">{{ customer.aadhaarNumber }}</span>
           </div>
           <div class="detail-row">
-            <span class="detail-label">City:</span>
-            <span class="detail-value">{{ customer.address.city }}</span>
+            <span class="detail-label">Address:</span>
+            <span class="detail-value">{{ customer.address }}</span>
           </div>
         </div>
       </div>
@@ -97,7 +97,7 @@
       aria-labelledby="customerModalLabel" 
       aria-hidden="true"
     >
-      <div class="modal-dialog">
+      <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
           <div class="modal-header">
             <h5 class="modal-title" id="customerModalLabel">
@@ -105,11 +105,11 @@
             </h5>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
-          <div class="modal-body">
+          <div class="modal-body position-relative" style="max-height: 60vh; overflow-y: auto;">
             <div *ngIf="errorMessage" class="alert alert-danger" role="alert">
               {{ errorMessage }}
             </div>
-            <form [formGroup]="customerForm" (ngSubmit)="submitCustomer()">
+            <form [formGroup]="customerForm" (ngSubmit)="submitCustomer()" style="padding-right: 15px;">
               <div class="row">
                 <div class="col-md-6 mb-3">
                   <label for="firstName" class="form-label">First Name</label>
@@ -118,9 +118,9 @@
                     class="form-control" 
                     id="firstName" 
                     formControlName="firstName"
-                    [ngClass]="{'is-invalid': firstNameErrors}"
+                    [ngClass]="{'is-invalid': firstName?.invalid && (firstName?.dirty || firstName?.touched)}"
                   >
-                  <div *ngIf="firstNameErrors" class="invalid-feedback">
+                  <div *ngIf="firstName?.invalid && (firstName?.dirty || firstName?.touched)" class="invalid-feedback">
                     First name is required and must be at least 2 characters.
                   </div>
                 </div>
@@ -131,28 +131,29 @@
                     class="form-control" 
                     id="lastName" 
                     formControlName="lastName"
-                    [ngClass]="{'is-invalid': lastNameErrors}"
+                    [ngClass]="{'is-invalid': lastName?.invalid && (lastName?.dirty || lastName?.touched)}"
                   >
-                  <div *ngIf="lastNameErrors" class="invalid-feedback">
+                  <div *ngIf="lastName?.invalid && (lastName?.dirty || lastName?.touched)" class="invalid-feedback">
                     Last name is required and must be at least 2 characters.
                   </div>
                 </div>
-              </div>
-
-              <div class="row">
+                
+                <!-- Phone Number -->
                 <div class="col-md-6 mb-3">
                   <label for="phoneNumber" class="form-label">Phone Number</label>
                   <input 
-                    type="text" 
+                    type="tel" 
                     class="form-control" 
                     id="phoneNumber" 
                     formControlName="phoneNumber"
                     [ngClass]="{'is-invalid': phoneNumberErrors}"
                   >
                   <div *ngIf="phoneNumberErrors" class="invalid-feedback">
-                    Invalid phone number. Must be 10 digits starting with 6-9.
+                    Please enter a valid 10-digit phone number.
                   </div>
                 </div>
+                
+                <!-- Aadhaar Number -->
                 <div class="col-md-6 mb-3">
                   <label for="aadhaarNumber" class="form-label">Aadhaar Number</label>
                   <input 
@@ -163,13 +164,12 @@
                     [ngClass]="{'is-invalid': aadhaarNumberErrors}"
                   >
                   <div *ngIf="aadhaarNumberErrors" class="invalid-feedback">
-                    Invalid Aadhaar number. Must be 12 digits.
+                    Please enter a valid 12-digit Aadhaar number.
                   </div>
                 </div>
-              </div>
-
-              <div formGroupName="address">
-                <div class="row">
+                
+                <!-- Address Fields -->
+                <div formGroupName="address">
                   <div class="col-12 mb-3">
                     <label for="street" class="form-label">Street Address</label>
                     <input 
@@ -177,51 +177,70 @@
                       class="form-control" 
                       id="street" 
                       formControlName="street"
+                      [ngClass]="{'is-invalid': streetErrors}"
                     >
+                    <div *ngIf="streetErrors" class="invalid-feedback">
+                      Please enter a valid street address.
+                    </div>
                   </div>
-                </div>
-                <div class="row">
-                  <div class="col-md-4 mb-3">
-                    <label for="city" class="form-label">City</label>
-                    <input 
-                      type="text" 
-                      class="form-control" 
-                      id="city" 
-                      formControlName="city"
-                    >
-                  </div>
-                  <div class="col-md-4 mb-3">
-                    <label for="state" class="form-label">State</label>
-                    <input 
-                      type="text" 
-                      class="form-control" 
-                      id="state" 
-                      formControlName="state"
-                    >
-                  </div>
-                  <div class="col-md-4 mb-3">
-                    <label for="pinCode" class="form-label">Pin Code</label>
-                    <input 
-                      type="text" 
-                      class="form-control" 
-                      id="pinCode" 
-                      formControlName="pinCode"
-                    >
-                  </div>
-                </div>
-              </div>
 
-              <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button 
-                  type="submit" 
-                  class="btn btn-primary" 
-                  [disabled]="customerForm.invalid"
-                >
-                  {{ isEditMode ? 'Update Customer' : 'Add Customer' }}
-                </button>
+                  <div class="row">
+                    <div class="col-md-4 mb-3">
+                      <label for="city" class="form-label">City</label>
+                      <input 
+                        type="text" 
+                        class="form-control" 
+                        id="city" 
+                        formControlName="city"
+                        [ngClass]="{'is-invalid': cityErrors}"
+                      >
+                      <div *ngIf="cityErrors" class="invalid-feedback">
+                        Please enter a valid city name.
+                      </div>
+                    </div>
+                    
+                    <div class="col-md-4 mb-3">
+                      <label for="state" class="form-label">State</label>
+                      <input 
+                        type="text" 
+                        class="form-control" 
+                        id="state" 
+                        formControlName="state"
+                        [ngClass]="{'is-invalid': stateErrors}"
+                      >
+                      <div *ngIf="stateErrors" class="invalid-feedback">
+                        Please enter a valid state name.
+                      </div>
+                    </div>
+                    
+                    <div class="col-md-4 mb-3">
+                      <label for="pinCode" class="form-label">Pin Code</label>
+                      <input 
+                        type="text" 
+                        class="form-control" 
+                        id="pinCode" 
+                        formControlName="pinCode"
+                        [ngClass]="{'is-invalid': pinCodeErrors}"
+                      >
+                      <div *ngIf="pinCodeErrors" class="invalid-feedback">
+                        Please enter a valid 6-digit pin code.
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
             </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <button 
+              type="submit" 
+              class="btn btn-primary" 
+              [disabled]="customerForm.invalid"
+              (click)="submitCustomer()"
+            >
+              {{ isEditMode ? 'Update Customer' : 'Add Customer' }}
+            </button>
           </div>
         </div>
       </div>

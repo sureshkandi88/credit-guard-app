@@ -2,20 +2,18 @@ export interface Customer {
   id?: string;
   firstName: string;
   lastName: string;
-  phoneNumber: string;
   aadhaarNumber: string;
-  address: {
-    street: string;
-    city: string;
-    state: string;
-    pinCode: string;
-  };
+  phoneNumber: string;
+  address: string; // Full address as a single string
+  profilePhotoPath?: string;
+  aadhaarPhotoPath?: string;
+  activeGroupId?: number;
+  isActive?: boolean;
+  customerGroups?: any[]; // Define a more specific type if needed
   location?: {
     latitude: number;
     longitude: number;
   };
-  photo?: string; // Base64 or URL
-  aadhaarPhoto?: string; // Base64 or URL
   createdAt?: Date;
   updatedAt?: Date;
 }

@@ -1,0 +1,17 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.app-content {
+  flex-grow: 1;
+  padding: 20px;
+  background-color: #f4f6f9;
+}
+
+app-header {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
