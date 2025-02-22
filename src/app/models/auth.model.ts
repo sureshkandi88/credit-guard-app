@@ -18,4 +18,5 @@ export interface UserProfile {
   role: string;
   firstName?: string;
   lastName?: string;
+  tenantId?: string; // Add optional tenant ID
 }

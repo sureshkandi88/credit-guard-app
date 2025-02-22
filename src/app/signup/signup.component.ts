@@ -81,25 +81,17 @@ export class SignupComponent {
     this.signupStatus = 'idle';
     this.errorMessage = '';
 
-    const { 
-      username, 
-      email, 
-      password, 
-      firstName, 
-      lastName,
-      secretQuestion,
-      secretAnswer
-    } = this.signupForm.value;
+    const signupRequest = {
+      username: this.signupForm.value.username, 
+      email: this.signupForm.value.email, 
+      password: this.signupForm.value.password, 
+      firstName: this.signupForm.value.firstName || undefined, 
+      lastName: this.signupForm.value.lastName || undefined,
+      secretQuestion: this.signupForm.value.secretQuestion,
+      secretAnswer: this.signupForm.value.secretAnswer
+    };
 
-    this.authService.signup(
-      username, 
-      email, 
-      password, 
-      secretQuestion,
-      secretAnswer,
-      firstName || undefined, 
-      lastName || undefined
-    ).subscribe({
+    this.authService.signup(signupRequest).subscribe({
       next: (response) => {
         this.signupStatus = 'success';
         // Optional: Add a timeout to redirect or show success message

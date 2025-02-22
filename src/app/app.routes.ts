@@ -5,6 +5,7 @@ import { ForgotPasswordComponent } from './forgot-password/forgot-password.compo
 import { SignupComponent } from './signup/signup.component';
 import { AuthGuard } from './auth.guard';
 import { CustomersComponent } from './customers/customers.component';
+import { GroupsComponent } from './groups/groups.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { TransactionsComponent } from './transactions/transactions.component';
 import { ReportsComponent } from './reports/reports.component';
@@ -37,6 +38,11 @@ export const routes: Routes = [
   { 
     path: 'customers', 
     component: CustomersComponent,
+    canActivate: [AuthGuard]
+  },
+  { 
+    path: 'groups', 
+    component: GroupsComponent,
     canActivate: [AuthGuard]
   },
   { path: '**', redirectTo: '/login' }

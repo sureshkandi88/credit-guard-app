@@ -1,4 +1,4 @@
-<div *ngIf="isLoggedIn$ | async; as user; else loginPrompt">
+<div *ngIf="(isLoggedIn$ | async) as user; else loginPrompt">
   <app-header></app-header>
   <router-outlet></router-outlet>
 </div>

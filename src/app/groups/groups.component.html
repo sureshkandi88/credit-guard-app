@@ -1,0 +1,199 @@
+<div class="groups-container">
+  <app-header activeRoute="groups"></app-header>
+
+  <!-- Loading Indicator -->
+  <div *ngIf="isLoading" class="loading-container">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+    <p class="mt-2">Loading groups...</p>
+  </div>
+
+  <!-- Error Message -->
+  <div *ngIf="errorMessage" class="error-container">
+    <div class="alert alert-danger" role="alert">
+      <i class="bi bi-exclamation-triangle-fill me-2"></i>
+      {{ errorMessage }}
+      <button 
+        class="btn btn-sm btn-outline-danger ms-2" 
+        (click)="retryLoadGroups()"
+      >
+        <i class="bi bi-arrow-repeat me-1"></i>
+        Retry
+      </button>
+    </div>
+  </div>
+
+  <!-- Groups Content -->
+  <ng-container *ngIf="!isLoading && !errorMessage">
+    <main class="groups-content">
+      <div class="content-header">
+        <h2>Customer Groups</h2>
+        <p>Manage and organize your customer groups</p>
+      </div>
+
+      <!-- Search and Add Group Section -->
+      <div class="groups-actions d-flex justify-content-between align-items-center">
+        <div class="search-container flex-grow-1 me-2">
+          <input 
+            type="text" 
+            [(ngModel)]="searchQuery" 
+            (input)="searchGroups()" 
+            placeholder="Search groups" 
+            class="search-input w-100"
+          >
+        </div>
+        <button 
+          class="add-group-btn btn btn-primary" 
+          (click)="openAddGroupModal(groupModal)"
+        >
+          <i class="bi bi-plus-lg"></i>
+          <span class="d-none d-md-inline">Add Group</span>
+          <span class="d-md-none">+</span>
+        </button>
+      </div>
+
+      <!-- Groups Grid -->
+      <div *ngIf="hasGroups; else noGroups" class="groups-grid">
+        <div *ngFor="let group of safeGroups" class="group-card">
+          <div class="group-header">
+            <h3>{{ safeGroupProperty(group, 'name', 'Unnamed Group') }}</h3>
+            <div class="group-actions">
+              <button 
+                class="btn btn-sm btn-outline-primary me-2" 
+                (click)="openEditGroupModal(group, groupModal)"
+                [attr.aria-label]="'Edit Group ' + safeGroupProperty(group, 'name', 'Unnamed Group')"
+              >
+                <span class="btn-icon">
+                  <i class="bi bi-pencil-fill"></i>
+                </span>
+              </button>
+              <button 
+                class="btn btn-sm btn-outline-danger" 
+                (click)="deleteGroup(group)"
+                [attr.aria-label]="'Delete Group ' + safeGroupProperty(group, 'name', 'Unnamed Group')"
+              >
+                <span class="btn-icon">
+                  <i class="bi bi-trash-fill"></i>
+                </span>
+              </button>
+            </div>
+          </div>
+          <div class="group-details">
+            <p>{{ safeGroupProperty(group, 'description', 'No description') }}</p>
+            <div class="group-meta">
+              <span>
+                <i class="bi bi-people"></i> 
+                {{ safeGroupProperty(group, 'memberCount', 0) }} Members
+              </span>
+              <span class="text-muted">
+                Created: {{ safeGroupProperty(group, 'createdAt') | date:'mediumDate':'UTC':'en-US' }}
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- No Groups Template -->
+      <ng-template #noGroups>
+        <div class="no-groups-message text-center">
+          <div class="mb-3">
+            <i class="bi bi-folder-x fs-1 text-muted"></i>
+          </div>
+          <p>No groups found.</p>
+          <button 
+            class="btn btn-primary" 
+            (click)="openAddGroupModal(groupModal)"
+            aria-label="Create First Group"
+          >
+            <span class="btn-icon me-2">
+              <i class="bi bi-plus-circle"></i>
+            </span>
+            Create First Group
+          </button>
+        </div>
+      </ng-template>
+
+      <!-- Pagination -->
+      <div 
+        *ngIf="totalItems > itemsPerPage" 
+        class="pagination-controls"
+      >
+        <ngb-pagination 
+          [(page)]="currentPage"
+          [pageSize]="itemsPerPage"
+          [collectionSize]="totalItems"
+          (pageChange)="onPageChange($event)"
+        ></ngb-pagination>
+      </div>
+    </main>
+  </ng-container>
+
+  <!-- Group Modal -->
+  <ng-template #groupModal let-modal>
+    <div class="modal-header">
+      <h5 class="modal-title" id="group-modal-title">
+        {{ isEditMode ? 'Edit Group' : 'Add Group' }}
+      </h5>
+      <button 
+        type="button" 
+        class="btn-close" 
+        aria-label="Close" 
+        (click)="modal.dismiss()"
+      ></button>
+    </div>
+    <div class="modal-body">
+      <form [formGroup]="groupForm" (ngSubmit)="submitGroup(modal)">
+        <div class="mb-3">
+          <label for="groupName" class="form-label">Group Name</label>
+          <input 
+            type="text" 
+            class="form-control" 
+            id="groupName" 
+            formControlName="name" 
+            [class.is-invalid]="nameErrors"
+            required
+          >
+          <div 
+            *ngIf="nameErrors" 
+            class="invalid-feedback"
+          >
+            Please provide a valid group name (3-50 characters)
+          </div>
+        </div>
+        <div class="mb-3">
+          <label for="groupDescription" class="form-label">Description</label>
+          <textarea 
+            class="form-control" 
+            id="groupDescription" 
+            formControlName="description"
+            [class.is-invalid]="descriptionErrors"
+            rows="3"
+          ></textarea>
+          <div 
+            *ngIf="descriptionErrors" 
+            class="invalid-feedback"
+          >
+            Description must be less than 250 characters
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button 
+            type="button" 
+            class="btn btn-secondary" 
+            (click)="modal.dismiss()"
+          >
+            Cancel
+          </button>
+          <button 
+            type="submit" 
+            class="btn btn-primary" 
+            [disabled]="groupForm.invalid"
+          >
+            {{ isEditMode ? 'Update Group' : 'Create Group' }}
+          </button>
+        </div>
+      </form>
+    </div>
+  </ng-template>
+</div>

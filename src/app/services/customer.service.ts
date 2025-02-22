@@ -1,79 +1,121 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders, HttpEventType } from '@angular/common/http';
+import { HttpClient, HttpParams, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { environment } from '@environments/environment';
-import { Customer } from '../models/customer.model';
+import { environment } from '../../environments/environment';
+import { 
+  Customer, 
+  CustomerCreateDto, 
+  CustomerUpdateDto, 
+  CustomerPaginatedResponse 
+} from '../models/customer.model';
 import { AuthService } from './auth.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class CustomerService {
-  private apiUrl = environment.apiBaseUrl + '/Customer';
+  private apiUrl = `${environment.apiBaseUrl}/customer`;
 
   constructor(
     private http: HttpClient,
     private authService: AuthService
   ) {}
 
-  // Get headers with authorization token
-  private getHeaders(): HttpHeaders {
+  // Get authentication headers
+  private getAuthHeaders(): HttpHeaders {
     const token = this.authService.getAuthToken();
     return new HttpHeaders({
+      'Content-Type': 'application/json',
       'Authorization': `Bearer ${token}`
     });
   }
 
-  // Get all customers
-  getCustomers(): Observable<Customer[]> {
-    return this.http.get<Customer[]>(this.apiUrl, { headers: this.getHeaders() });
-  }
+  // Get paginated list of customers
+  getCustomers(page: number = 1, pageSize: number = 10): Observable<CustomerPaginatedResponse> {
+    const params = new HttpParams()
+      .set('page', page.toString())
+      .set('pageSize', pageSize.toString());
 
-  // Get customer by ID
-  getCustomerById(id: string): Observable<Customer> {
-    return this.http.get<Customer>(`${this.apiUrl}/${id}`, { headers: this.getHeaders() });
-  }
-
-  // Create a new customer with file upload support
-  createCustomer(customerData: FormData): Observable<Customer> {
-    // Log FormData contents for debugging
-    customerData.forEach((value, key) => {
-      console.log(`FormData Entry - ${key}:`, value);
-    });
-
-    // Create headers without explicitly setting Content-Type
-    const headers = this.getHeaders();
-
-    return this.http.post<Customer>(`${this.apiUrl}`, customerData, { 
-      headers: headers
+    return this.http.get<CustomerPaginatedResponse>(this.apiUrl, {
+      headers: this.getAuthHeaders(),
+      params: params
     });
   }
 
-  // Update an existing customer with file upload support
-  updateCustomer(customerId: string, customerData: FormData): Observable<Customer> {
-    // Log FormData contents for debugging
-    customerData.forEach((value, key) => {
-      console.log(`FormData Entry - ${key}:`, value);
+  // Get a single customer by ID
+  getCustomerById(id: number): Observable<Customer> {
+    return this.http.get<Customer>(`${this.apiUrl}/${id}`, {
+      headers: this.getAuthHeaders()
+    });
+  }
+
+  // Create a new customer with file upload
+  createCustomer(customerData: CustomerCreateDto): Observable<Customer> {
+    const formData = new FormData();
+    
+    // Append text fields
+    Object.keys(customerData).forEach(key => {
+      const value = customerData[key as keyof CustomerCreateDto];
+      if (value !== undefined && value !== null && !(value instanceof File)) {
+        formData.append(key, value.toString());
+      }
     });
 
-    // Create headers without explicitly setting Content-Type
-    const headers = this.getHeaders();
+    // Append files
+    if (customerData.profilePhoto) {
+      formData.append('profilePhoto', customerData.profilePhoto, customerData.profilePhoto.name);
+    }
+    if (customerData.aadhaarPhoto) {
+      formData.append('aadhaarPhoto', customerData.aadhaarPhoto, customerData.aadhaarPhoto.name);
+    }
 
-    return this.http.put<Customer>(`${this.apiUrl}/${customerId}`, customerData, { 
-      headers: headers
+    return this.http.post<Customer>(this.apiUrl, formData, {
+      headers: this.getAuthHeaders()
+    });
+  }
+
+  // Update an existing customer with file upload
+  updateCustomer(id: number, customerData: CustomerUpdateDto): Observable<Customer> {
+    const formData = new FormData();
+    
+    // Append text fields
+    Object.keys(customerData).forEach(key => {
+      const value = customerData[key as keyof CustomerUpdateDto];
+      if (value !== undefined && value !== null && !(value instanceof File)) {
+        formData.append(key, value.toString());
+      }
+    });
+
+    // Append files
+    if (customerData.profilePhoto) {
+      formData.append('profilePhoto', customerData.profilePhoto, customerData.profilePhoto.name);
+    }
+    if (customerData.aadhaarPhoto) {
+      formData.append('aadhaarPhoto', customerData.aadhaarPhoto, customerData.aadhaarPhoto.name);
+    }
+
+    return this.http.put<Customer>(`${this.apiUrl}/${id}`, formData, {
+      headers: this.getAuthHeaders()
     });
   }
 
   // Delete a customer
-  deleteCustomer(id: string): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}/${id}`, { headers: this.getHeaders() });
+  deleteCustomer(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/${id}`, {
+      headers: this.getAuthHeaders()
+    });
   }
 
-  // Search customers by name or Aadhaar number
-  searchCustomers(query: string): Observable<Customer[]> {
-    return this.http.get<Customer[]>(`${this.apiUrl}/search`, {
-      headers: this.getHeaders(),
-      params: { query }
+  // Search customers
+  searchCustomers(query: string, page: number = 1, pageSize: number = 10): Observable<CustomerPaginatedResponse> {
+    const params = new HttpParams()
+      .set('query', query)
+      .set('page', page.toString())
+      .set('pageSize', pageSize.toString());
+
+    return this.http.get<CustomerPaginatedResponse>(`${this.apiUrl}/search`, {
+      headers: this.getAuthHeaders(),
+      params: params
     });
   }
 }

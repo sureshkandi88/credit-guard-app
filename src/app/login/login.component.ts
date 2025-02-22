@@ -16,6 +16,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 export class LoginComponent implements OnInit {
   loginForm: FormGroup;
   isLoading = false;
+  showPassword = false;
   errorMessage: string | null = null;
   loginError = false;
 
@@ -26,7 +27,8 @@ export class LoginComponent implements OnInit {
   ) {
     this.loginForm = this.fb.group({
       username: ['', [Validators.required, Validators.minLength(3)]],
-      password: ['', [Validators.required, Validators.minLength(6)]]
+      password: ['', [Validators.required, Validators.minLength(6)]],
+      rememberMe: [false]
     });
   }
 
@@ -35,6 +37,10 @@ export class LoginComponent implements OnInit {
     if (this.authService.isAuthenticated()) {
       this.router.navigate(['/home']);
     }
+  }
+
+  togglePasswordVisibility(): void {
+    this.showPassword = !this.showPassword;
   }
 
   onSubmit(): void {
@@ -51,28 +57,20 @@ export class LoginComponent implements OnInit {
       password: this.loginForm.get('password')?.value
     };
 
-    this.authService.login(loginRequest).subscribe(
-      (response: LoginResponse) => {
+    this.authService.login(loginRequest).subscribe({
+      next: (response: LoginResponse) => {
         this.isLoading = false;
-        // Navigate to home page or dashboard
+        if (this.loginForm.get('rememberMe')?.value) {
+          localStorage.setItem('rememberMe', 'true');
+        }
         this.router.navigate(['/home']);
       },
-      (error: HttpErrorResponse) => {
+      error: (error: HttpErrorResponse) => {
         this.isLoading = false;
         this.loginError = true;
-        
-        // Handle different types of errors
-        if (error.status === 401) {
-          this.errorMessage = 'Invalid username or password';
-        } else if (error.status === 0) {
-          this.errorMessage = 'No internet connection';
-        } else {
-          this.errorMessage = 'An unexpected error occurred. Please try again.';
-        }
-        
-        console.error('Login error:', error);
+        this.errorMessage = error.status === 401 ? 'Invalid credentials' : 'An error occurred. Please try again later.';
       }
-    );
+    });
   }
 
   navigateToForgotPassword(event: Event): void {
