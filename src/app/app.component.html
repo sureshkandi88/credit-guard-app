@@ -1,4 +1,8 @@
-<app-header></app-header>
-<div class="app-content">
+<div *ngIf="isLoggedIn$ | async; as user; else loginPrompt">
+  <app-header></app-header>
   <router-outlet></router-outlet>
 </div>
+
+<ng-template #loginPrompt>
+  <router-outlet></router-outlet>
+</ng-template>
