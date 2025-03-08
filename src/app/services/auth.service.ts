@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Router } from '@angular/router';
-import { BehaviorSubject, Observable, throwError } from 'rxjs';
+import { BehaviorSubject, Observable, throwError, of } from 'rxjs';
 import { catchError, map, tap } from 'rxjs/operators';
 
 import { environment } from '../../environments/environment';
@@ -19,56 +19,72 @@ interface SignupRequest {
 }
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class AuthService {
-  private currentUserSubject = new BehaviorSubject<UserProfile | null>(null);
-  public currentUser$ = this.currentUserSubject.asObservable();
-
   private readonly AUTH_TOKEN_KEY = 'credit_guard_auth_token';
   private readonly USER_PROFILE_KEY = 'credit_guard_user_profile';
   private readonly TOKEN_KEY = 'credit_guard_auth_token';
 
-  constructor(
-    private http: HttpClient, 
-    private router: Router
-  ) {
+  private isAuthenticatedSubject = new BehaviorSubject<boolean>(false);
+  public isAuthenticated$ = this.isAuthenticatedSubject.asObservable();
+
+  private currentUserSubject = new BehaviorSubject<UserProfile | null>(null);
+  public currentUser$ = this.currentUserSubject.asObservable();
+
+  constructor(private http: HttpClient, private router: Router) {
+    // Subscribe to authentication state changes
+    this.isAuthenticated$.subscribe((isAuthenticated) => {
+      console.group('Authentication State Change');
+      console.log('Is Authenticated:', isAuthenticated);
+      console.log('Timestamp:', new Date().toISOString());
+      console.groupEnd();
+    });
+
     // Check for existing token and user profile on service initialization
     this.loadUserFromStorage();
   }
 
   login(credentials: LoginRequest): Observable<LoginResponse> {
-    return this.http.post<LoginResponse>(`${environment.authBaseUrl}/login`, credentials).pipe(
-      tap((response: LoginResponse) => this.handleAuthentication(response)),
-      catchError((error: HttpErrorResponse) => {
-        // Log the error and rethrow
-        console.error('Login error:', error);
-        return throwError(() => error);
-      })
-    );
+    return this.http
+      .post<LoginResponse>(`${environment.authBaseUrl}/login`, credentials)
+      .pipe(
+        tap((response: LoginResponse) => this.handleAuthentication(response)),
+        catchError((error: HttpErrorResponse) => {
+          // Log the error and rethrow
+          console.error('Login error:', error);
+          return throwError(() => error);
+        })
+      );
   }
 
   signup(signupRequest: SignupRequest): Observable<LoginResponse> {
-    return this.http.post<LoginResponse>(`${environment.authBaseUrl}/register`, signupRequest).pipe(
-      tap(response => {
-        // Store authentication token
-        localStorage.setItem(this.TOKEN_KEY, response.token);
-        
-        // Update user profile
-        const userProfile: UserProfile = {
-          id: response.userId,
-          username: response.username,
-          role: response.role
-        };
-        
-        // Store user profile
-        localStorage.setItem(this.USER_PROFILE_KEY, JSON.stringify(userProfile));
-        
-        // Update current user subject
-        this.currentUserSubject.next(userProfile);
-      }),
-      catchError(this.handleError)
-    );
+    return this.http
+      .post<LoginResponse>(`${environment.authBaseUrl}/register`, signupRequest)
+      .pipe(
+        tap((response) => {
+          // Store authentication token
+          localStorage.setItem(this.TOKEN_KEY, response.token);
+
+          // Update user profile
+          const userProfile: UserProfile = {
+            id: response.userId,
+            username: response.username,
+            role: response.role,
+          };
+
+          // Store user profile
+          localStorage.setItem(
+            this.USER_PROFILE_KEY,
+            JSON.stringify(userProfile)
+          );
+
+          // Update current user subject and authentication state
+          this.currentUserSubject.next(userProfile);
+          this.isAuthenticatedSubject.next(true);
+        }),
+        catchError(this.handleError)
+      );
   }
 
   private handleAuthentication(response: LoginResponse) {
@@ -79,12 +95,13 @@ export class AuthService {
     const userProfile: UserProfile = {
       id: response.userId,
       username: response.username,
-      role: response.role
+      role: response.role,
     };
     localStorage.setItem(this.USER_PROFILE_KEY, JSON.stringify(userProfile));
 
-    // Update current user subject
+    // Update current user subject and authentication state
     this.currentUserSubject.next(userProfile);
+    this.isAuthenticatedSubject.next(true);
   }
 
   private loadUserFromStorage() {
@@ -94,10 +111,20 @@ export class AuthService {
     if (storedToken && storedProfile) {
       try {
         const userProfile = JSON.parse(storedProfile);
-        this.currentUserSubject.next(userProfile);
+        // Check if token is valid
+        if (!this.isTokenExpired(storedToken)) {
+          this.currentUserSubject.next(userProfile);
+          this.isAuthenticatedSubject.next(true);
+        } else {
+          // If token is expired, clear everything
+          this.logout();
+        }
       } catch (error) {
         this.logout();
       }
+    } else {
+      // If either token or profile is missing, ensure we're in a logged out state
+      this.logout();
     }
   }
 
@@ -106,8 +133,9 @@ export class AuthService {
     localStorage.removeItem(this.AUTH_TOKEN_KEY);
     localStorage.removeItem(this.USER_PROFILE_KEY);
 
-    // Reset current user
+    // Reset current user and authentication state
     this.currentUserSubject.next(null);
+    this.isAuthenticatedSubject.next(false);
 
     // Navigate to login page
     this.router.navigate(['/login']);
@@ -124,27 +152,34 @@ export class AuthService {
 
     // Redirect to login page
     this.router.navigate(['/login'], {
-      queryParams: { 
+      queryParams: {
         returnUrl: this.router.url,
-        reason: 'session_expired'
-      }
+        reason: 'session_expired',
+      },
     });
   }
 
   // Get current authentication token
   getAuthToken(): string | null {
     const token = localStorage.getItem(this.TOKEN_KEY);
-    
-    // Optional: Add token validation
+
     if (token) {
-      // Check if token is expired (if you have expiration logic)
       const isExpired = this.isTokenExpired(token);
-      
+
       if (isExpired) {
         console.warn('Token has expired. Clearing session.');
         this.handleAuthenticationError();
+        this.isAuthenticatedSubject.next(false);
         return null;
       }
+
+      // Ensure authentication state is synchronized
+      if (!this.isAuthenticatedSubject.value) {
+        this.isAuthenticatedSubject.next(true);
+      }
+    } else {
+      // No token means not authenticated
+      this.isAuthenticatedSubject.next(false);
     }
 
     return token;
@@ -155,7 +190,7 @@ export class AuthService {
     try {
       // Decode JWT to check expiration
       const decoded = this.decodeToken(token);
-      
+
       if (!decoded || !decoded.exp) {
         return true; // Consider token invalid if no expiration
       }
@@ -207,9 +242,24 @@ export class AuthService {
     return userProfile?.tenantId || null;
   }
 
+  forgotPassword(email: string): Observable<boolean> {
+    return this.http
+      .post<{ success: boolean }>(
+        `${environment.authBaseUrl}/forgot-password`,
+        { email }
+      )
+      .pipe(
+        map((response) => response.success),
+        catchError((error) => {
+          console.error('Password reset error:', error);
+          return of(false);
+        })
+      );
+  }
+
   private handleError(error: HttpErrorResponse) {
     let errorMessage = 'An unknown error occurred!';
-    
+
     if (error.error instanceof ErrorEvent) {
       // Client-side error
       errorMessage = `Error: ${error.error.message}`;
@@ -217,7 +267,7 @@ export class AuthService {
       // Server-side error
       errorMessage = `Error Code: ${error.status}\nMessage: ${error.message}`;
     }
-    
+
     console.error(errorMessage);
     return throwError(() => new Error(errorMessage));
   }

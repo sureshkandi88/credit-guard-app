@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { AuthService } from '../auth.service';
+import { AuthService } from '../services/auth.service';
 
 @Component({
   selector: 'app-forgot-password',
@@ -28,17 +28,22 @@ export class ForgotPasswordComponent {
   onSubmit() {
     if (this.forgotPasswordForm.valid) {
       const email = this.forgotPasswordForm.get('email')?.value;
-      const resetSuccess = this.authService.forgotPassword(email);
-
-      if (resetSuccess) {
-        this.resetStatus = 'success';
-        // Optional: Add a timeout to redirect or show login
-        setTimeout(() => {
-          this.router.navigate(['/login']);
-        }, 3000);
-      } else {
-        this.resetStatus = 'error';
-      }
+      this.authService.forgotPassword(email).subscribe({
+        next: (success) => {
+          if (success) {
+            this.resetStatus = 'success';
+            // Optional: Add a timeout to redirect or show login
+            setTimeout(() => {
+              this.router.navigate(['/login']);
+            }, 3000);
+          } else {
+            this.resetStatus = 'error';
+          }
+        },
+        error: () => {
+          this.resetStatus = 'error';
+        }
+      });
     }
   }
 

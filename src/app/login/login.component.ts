@@ -59,11 +59,19 @@ export class LoginComponent implements OnInit {
 
     this.authService.login(loginRequest).subscribe({
       next: (response: LoginResponse) => {
+        console.log('Login successful:', response);
         this.isLoading = false;
         if (this.loginForm.get('rememberMe')?.value) {
           localStorage.setItem('rememberMe', 'true');
         }
-        this.router.navigate(['/home']);
+        console.log('Navigating to home page...');
+        // Wait for authentication state to be updated
+        setTimeout(() => {
+          this.router.navigate(['/home']).then(
+            () => console.log('Navigation successful'),
+            error => console.error('Navigation failed:', error)
+          );
+        }, 100);
       },
       error: (error: HttpErrorResponse) => {
         this.isLoading = false;
