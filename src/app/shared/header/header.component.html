@@ -1,30 +1,26 @@
-<header class="app-header">
-  <div class="header-content">
-    <div class="logo">
-      <h1>Credit Guard</h1>
-    </div>
-    
-    <div class="mobile-toggle" (click)="toggleMobileMenu()">
-      <span class="hamburger-icon" [class.active]="isMobileMenuOpen">
-        <span></span>
-        <span></span>
-        <span></span>
-      </span>
-    </div>
-    
-    <nav class="main-nav" [class.mobile-open]="isMobileMenuOpen">
-      <ul>
-        <li><a routerLink="/home" [class.active]="isRouteActive('home')" (click)="closeMobileMenu()">Home</a></li>
-        <li><a routerLink="/dashboard" [class.active]="isRouteActive('dashboard')" (click)="closeMobileMenu()">Dashboard</a></li>
-        <li><a routerLink="/transactions" [class.active]="isRouteActive('transactions')" (click)="closeMobileMenu()">Transactions</a></li>
-        <li><a routerLink="/reports" [class.active]="isRouteActive('reports')" (click)="closeMobileMenu()">Reports</a></li>
-        <li><a routerLink="/customers" [class.active]="isRouteActive('customers')" (click)="closeMobileMenu()">Customers</a></li>
-        <li><a routerLink="/groups" [class.active]="isRouteActive('groups')" (click)="closeMobileMenu()">Groups</a></li>
-      </ul>
-    </nav>
-    
-    <div class="user-actions" [class.mobile-open]="isMobileMenuOpen">
-      <button (click)="onLogout()" class="logout-btn">Logout</button>
-    </div>
-  </div>
-</header>
+<mat-toolbar color="primary">
+  <span class="title">Credit Guard</span>
+  <span class="spacer"></span>
+  <button mat-icon-button *ngIf="isHandset$ | async" (click)="sidenav.toggle()">
+    <mat-icon>menu</mat-icon>
+  </button>
+  <nav class="desktop-nav" *ngIf="!(isHandset$ | async)">
+    <a mat-button routerLink="/" routerLinkActive="active">Home</a>
+    <a mat-button routerLink="/about" routerLinkActive="active">About</a>
+    <a mat-button routerLink="/contact" routerLinkActive="active">Contact</a>
+  </nav>
+</mat-toolbar>
+
+<mat-sidenav-container>
+  <mat-sidenav #sidenav mode="over" [fixedInViewport]="true">
+    <mat-nav-list>
+      <a mat-list-item routerLink="/" (click)="sidenav.close()">Home</a>
+      <a mat-list-item routerLink="/about" (click)="sidenav.close()">About</a>
+      <a mat-list-item routerLink="/contact" (click)="sidenav.close()">Contact</a>
+    </mat-nav-list>
+  </mat-sidenav>
+
+  <mat-sidenav-content>
+    <router-outlet></router-outlet>
+  </mat-sidenav-content>
+</mat-sidenav-container>

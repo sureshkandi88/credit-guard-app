@@ -1,7 +1,7 @@
 export const environment = {
   production: true,
-  apiBaseUrl: 'https://localhost:7777/api',
-  authBaseUrl: 'https://localhost:7777/api/auth',
-  swaggerUrl: 'https://localhost:7777/swagger',
+  apiBaseUrl: 'https://creditguardapi-f0b3gvg5cne6fhe4.southindia-01.azurewebsites.net/api',
+  authBaseUrl: 'https://creditguardapi-f0b3gvg5cne6fhe4.southindia-01.azurewebsites.net/api/auth',
+  swaggerUrl: 'https://creditguardapi-f0b3gvg5cne6fhe4.southindia-01.azurewebsites.net/swagger',
   debug: false
 };
