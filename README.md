@@ -1,59 +1,117 @@
-# CreditGuardApp
+# CreditGuard App
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 19.1.7.
+CreditGuard is a modern web application built with Angular 19.1.7 that helps users manage and monitor credit-related activities.
 
-## Development server
+## Features
 
-To start a local development server, run:
+- User Authentication & Authorization
+- Customer Management
+- Transaction Monitoring
+- Group Management
+- Reporting System
+- Dashboard Analytics
+
+## Prerequisites
+
+- Node.js (Latest LTS version recommended)
+- npm (comes with Node.js)
+- Angular CLI v19.1.7
+
+## Installation
+
+1. Clone the repository
+2. Install dependencies:
 
 ```bash
-ng serve
+npm install
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+## Development Server
 
-## Code scaffolding
+Run the development server:
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+```bash
+npm start
+```
 
+Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+
+## Build
+
+To build the project for production:
+
+```bash
+npm run build
+```
+
+The build artifacts will be stored in the `dist/credit-guard-app` directory.
+
+## Project Structure
+
+```
+src/
+├── app/
+│   ├── auth/         # Authentication components
+│   ├── customers/    # Customer management
+│   ├── dashboard/    # Dashboard components
+│   ├── groups/       # Group management
+│   ├── reports/      # Reporting components
+│   ├── shared/       # Shared components
+│   ├── services/     # Application services
+│   └── models/       # Data models
+├── assets/          # Static assets
+├── environments/    # Environment configurations
+└── styles/         # Global styles
+```
+
+## Environment Configuration
+
+The application uses two environment configurations:
+
+- `environment.ts` - Production environment
+- `environment.development.ts` - Development environment
+
+Both environments are configured to connect to the Azure-hosted API:
+```typescript
+apiBaseUrl: 'https://creditguardapi-f0b3gvg5cne6fhe4.southindia-01.azurewebsites.net/api'
+```
+
+## Dependencies
+
+Key dependencies include:
+- Angular v19.1.0
+- Angular Material v19.1.5
+- Bootstrap v5.3.3
+- RxJS v7.8.0
+
+## Testing
+
+Run unit tests:
+```bash
+npm test
+```
+
+## Code Scaffolding
+
+Generate new components using Angular CLI:
 ```bash
 ng generate component component-name
 ```
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+Other available generators:
+- `ng generate directive|pipe|service|class|guard|interface|enum|module`
 
-```bash
-ng generate --help
-```
+## Contributing
 
-## Building
+1. Follow Angular style guide and coding conventions
+2. Write meaningful commit messages
+3. Document new features and API changes
+4. Add unit tests for new functionality
 
-To build the project run:
+## Support
 
-```bash
-ng build
-```
+For support and questions, please refer to the project documentation or contact the development team.
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+## License
 
-## Running unit tests
-
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
-
-```bash
-ng test
-```
-
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+This project is proprietary software. All rights reserved.
