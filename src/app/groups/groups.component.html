@@ -81,6 +81,10 @@
           </div>
           <div class="group-details">
             <p>{{ safeGroupProperty(group, 'description', 'No description') }}</p>
+            <div class="group-location">
+              <i class="bi bi-geo-alt me-1"></i>
+              {{ safeGroupProperty(group, 'location', 'Location not specified') }}
+            </div>
             <div class="group-meta">
               <span>
                 <i class="bi bi-people"></i> 
@@ -161,6 +165,23 @@
             Please provide a valid group name (3-50 characters)
           </div>
         </div>
+        <div class="mb-3">
+          <label for="groupLocation" class="form-label">Location</label>
+          <input 
+            type="text" 
+            class="form-control" 
+            id="groupLocation" 
+            formControlName="location"
+            [class.is-invalid]="locationErrors"
+          >
+          <div 
+            *ngIf="locationErrors" 
+            class="invalid-feedback"
+          >
+            Please provide a valid location (max 100 characters)
+          </div>
+        </div>
+
         <div class="mb-3">
           <label for="groupDescription" class="form-label">Description</label>
           <textarea 

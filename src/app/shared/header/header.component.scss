@@ -8,7 +8,84 @@
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   position: relative;
   z-index: 1000;
-
+  :host {
+    display: block;
+    height: 100%;
+  }
+  
+  mat-toolbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 2;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  }
+  
+  .title {
+    font-size: 1.2rem;
+    font-weight: 500;
+    margin-right: 1rem;
+  }
+  
+  .spacer {
+    flex: 1 1 auto;
+  }
+  
+  .desktop-nav {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  
+    a, button {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: white;
+      text-decoration: none;
+  
+      mat-icon {
+        margin-right: 4px;
+      }
+    }
+  
+    .active {
+      background-color: rgba(255, 255, 255, 0.1);
+    }
+  }
+  .sidenav-container {
+    height: calc(100vh - 64px);
+    margin-top: 64px;
+  
+    @media (max-width: 599px) {
+      height: calc(100vh - 56px);
+      margin-top: 56px;
+    }
+  }
+  mat-sidenav {
+    width: 250px;
+  
+    mat-nav-list {
+      padding-top: 0;
+  
+      a {
+        display: flex;
+        align-items: center;
+        height: 48px;
+  
+        mat-icon {
+          margin-right: 16px;
+        }
+  
+        &.active {
+          background-color: rgba(0, 0, 0, 0.04);
+        }
+      }
+    }
+  }
+  mat-sidenav-content {
+    padding: 16px;
+  }
   .header-content {
     display: flex;
     justify-content: space-between;
@@ -17,28 +94,26 @@
     margin: 0 auto;
     position: relative;
   }
-
   .logo h1 {
     margin: 0;
     font-size: 1.5rem;
     color: #ffffff; 
   }
-
   .main-nav {
     ul {
       display: flex;
       list-style: none;
       margin: 0;
       padding: 0;
-
+  
       li {
         margin: 0 1rem;
-
+  
         a {
           color: #ffffff; 
           text-decoration: none;
           transition: color 0.3s ease;
-
+  
           &:hover, &.active {
             color: #764ba2;
           }
@@ -46,7 +121,6 @@
       }
     }
   }
-
   .logout-btn {
     background-color: #764ba2;
     color: #ffffff; 
@@ -55,24 +129,22 @@
     border-radius: 4px;
     cursor: pointer;
     transition: background-color 0.3s ease;
-
+  
     &:hover {
       background-color: color.adjust(#764ba2, $lightness: -10%);
     }
   }
-
   .mobile-toggle {
     display: none;
     z-index: 1001;
   }
-
+  
   @media (max-width: vars.$breakpoint-mobile) {
     .header-content {
       flex-wrap: wrap;
       align-items: flex-start;
     }
-
-    .mobile-toggle {
+  .mobile-toggle {
       display: block;
       cursor: pointer;
       position: absolute;
@@ -80,8 +152,7 @@
       top: 50%;
       transform: translateY(-50%);
       z-index: 1001;
-
-      .hamburger-icon {
+  .hamburger-icon {
         display: flex;
         flex-direction: column;
         width: 25px;
@@ -93,8 +164,7 @@
           margin: 3px 0;
           transition: all 0.3s ease;
         }
-
-        &.active {
+  &.active {
           span:nth-child(1) {
             transform: rotate(45deg) translate(5px, 5px);
           }
@@ -107,8 +177,7 @@
         }
       }
     }
-
-    .main-nav {
+  .main-nav {
       display: none;
       width: 100%;
       position: absolute;
@@ -120,14 +189,14 @@
       &.mobile-open {
         display: block;
         padding: 1rem 0;
-
+  
         ul {
           flex-direction: column;
           
           li {
             margin: 1rem 0;
             text-align: center;
-
+  
             a {
               display: block;
               padding: 0.5rem 0;
@@ -136,11 +205,10 @@
         }
       }
     }
-
-    .user-actions {
+  .user-actions {
       display: none;
       width: 100%;
-
+  
       &.mobile-open {
         display: block;
         text-align: center;
@@ -149,17 +217,13 @@
     }
   }
 }
-
-
 .title {
   font-size: 1.5rem;
   color: white;
 }
-
 .spacer {
   flex: 1 1 auto;
 }
-
 .desktop-nav {
   a {
     color: white;
@@ -171,11 +235,9 @@
     }
   }
 }
-
 mat-sidenav {
   width: 250px;
 }
-
 mat-nav-list {
   background-color: #fff;
   padding: 16px;

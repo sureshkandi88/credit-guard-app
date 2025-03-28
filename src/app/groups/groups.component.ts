@@ -1,6 +1,12 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import {
+  FormsModule,
+  ReactiveFormsModule,
+  FormBuilder,
+  FormGroup,
+  Validators,
+} from '@angular/forms';
 import { NgbPaginationModule, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 import { GroupService } from '../services/group.service';
@@ -17,10 +23,10 @@ import { isNil } from '../shared/utils/is-nil.util';
     FormsModule,
     ReactiveFormsModule,
     NgbPaginationModule,
-    HeaderComponent
+    HeaderComponent,
   ],
   templateUrl: './groups.component.html',
-  styleUrls: ['./groups.component.scss']
+  styleUrls: ['./groups.component.scss'],
 })
 export class GroupsComponent implements OnInit {
   @ViewChild('groupModal') groupModal!: ElementRef;
@@ -31,6 +37,7 @@ export class GroupsComponent implements OnInit {
   isEditMode = false;
   isLoading = false;
   errorMessage: string | null = null;
+  locationErrors: { required?: boolean; maxlength?: boolean } = {};
 
   // Pagination
   currentPage = 1;
@@ -51,7 +58,7 @@ export class GroupsComponent implements OnInit {
   ngOnInit(): void {
     console.group('Groups Component: Initialization');
     console.log('Component initialized, loading groups...');
-    
+
     // Set initial loading state
     this.isLoading = true;
     this.errorMessage = null;
@@ -62,14 +69,16 @@ export class GroupsComponent implements OnInit {
 
   initializeForm(): void {
     this.groupForm = this.fb.group({
-      name: ['', [
-        Validators.required, 
-        Validators.minLength(3), 
-        Validators.maxLength(50)
-      ]],
-      description: ['', [
-        Validators.maxLength(250)
-      ]]
+      name: [
+        '',
+        [
+          Validators.required,
+          Validators.minLength(3),
+          Validators.maxLength(50),
+        ],
+      ],
+      location: ['', [Validators.required, Validators.maxLength(100)]],
+      description: ['', [Validators.maxLength(250)]],
     });
   }
 
@@ -98,12 +107,13 @@ export class GroupsComponent implements OnInit {
         this.groups = [];
         this.totalItems = 0;
         this.isLoading = false;
-        this.errorMessage = error.message || 'Failed to load groups. Please try again.';
+        this.errorMessage =
+          error.message || 'Failed to load groups. Please try again.';
       },
       complete: () => {
         console.log('Group loading process completed');
         this.isLoading = false;
-      }
+      },
     });
   }
 
@@ -130,7 +140,7 @@ export class GroupsComponent implements OnInit {
         this.groups = [];
         this.errorMessage = error.error?.message || 'Failed to search groups';
         this.isLoading = false;
-      }
+      },
     });
   }
 
@@ -138,9 +148,9 @@ export class GroupsComponent implements OnInit {
     this.isEditMode = false;
     this.selectedGroup = null;
     this.groupForm.reset();
-    this.modalService.open(content, { 
+    this.modalService.open(content, {
       ariaLabelledBy: 'group-modal-title',
-      centered: true 
+      centered: true,
     });
   }
 
@@ -149,11 +159,11 @@ export class GroupsComponent implements OnInit {
     this.selectedGroup = group;
     this.groupForm.patchValue({
       name: group.name,
-      description: group.description || ''
+      description: group.description || '',
     });
-    this.modalService.open(content, { 
+    this.modalService.open(content, {
       ariaLabelledBy: 'group-modal-title',
-      centered: true 
+      centered: true,
     });
   }
 
@@ -165,12 +175,13 @@ export class GroupsComponent implements OnInit {
     // Prepare group data with required fields
     const groupData: GroupCreateDto = {
       name: this.groupForm.get('name')?.value,
+      location: this.groupForm.get('location')?.value,
       description: this.groupForm.get('description')?.value || undefined,
-      // Provide empty arrays for required fields
+      isActive: true,
       debts: [],
       customerGroups: [],
       activeCustomers: [],
-      emiTransactions: []
+      emiTransactions: [],
     };
 
     this.isLoading = true;
@@ -179,36 +190,42 @@ export class GroupsComponent implements OnInit {
       // Prepare update data with required fields
       const updateData: GroupUpdateDto = {
         name: groupData.name,
+        location: this.groupForm.get('location')?.value,
         description: groupData.description,
         debts: [],
         customerGroups: [],
         activeCustomers: [],
-        emiTransactions: []
+        emiTransactions: [],
       };
 
-      this.groupService.updateGroup(this.selectedGroup.id, updateData).subscribe({
-        next: (updatedGroup) => {
-          const index = this.safeGroups.findIndex(g => g.id === updatedGroup.id);
-          if (index !== -1) {
-            this.groups[index] = updatedGroup;
-          }
-          modal.dismiss();
-          this.isLoading = false;
-        },
-        error: (error: HttpErrorResponse) => {
-          // More detailed error handling
-          if (error.error instanceof ErrorEvent) {
-            // Client-side error
-            this.errorMessage = `Error: ${error.error.message}`;
-          } else {
-            // Server-side error
-            this.errorMessage = error.error?.message || 
-              `Server Error: ${error.status} ${error.statusText}`;
-          }
-          console.error('Group update error:', error);
-          this.isLoading = false;
-        }
-      });
+      this.groupService
+        .updateGroup(String(this.selectedGroup.id), updateData)
+        .subscribe({
+          next: (updatedGroup) => {
+            const index = this.safeGroups.findIndex(
+              (g) => g.id === updatedGroup.id
+            );
+            if (index !== -1) {
+              this.groups[index] = updatedGroup;
+            }
+            modal.dismiss();
+            this.isLoading = false;
+          },
+          error: (error: HttpErrorResponse) => {
+            // More detailed error handling
+            if (error.error instanceof ErrorEvent) {
+              // Client-side error
+              this.errorMessage = `Error: ${error.error.message}`;
+            } else {
+              // Server-side error
+              this.errorMessage =
+                error.error?.message ||
+                `Server Error: ${error.status} ${error.statusText}`;
+            }
+            console.error('Group update error:', error);
+            this.isLoading = false;
+          },
+        });
     } else {
       // Create new group
       this.groupService.createGroup(groupData).subscribe({
@@ -224,12 +241,13 @@ export class GroupsComponent implements OnInit {
             this.errorMessage = `Error: ${error.error.message}`;
           } else {
             // Server-side error
-            this.errorMessage = error.error?.message || 
+            this.errorMessage =
+              error.error?.message ||
               `Server Error: ${error.status} ${error.statusText}`;
           }
           console.error('Group creation error:', error);
           this.isLoading = false;
-        }
+        },
       });
     }
   }
@@ -237,19 +255,21 @@ export class GroupsComponent implements OnInit {
   deleteGroup(group: Group): void {
     if (!group.id) return;
 
-    const confirmDelete = confirm(`Are you sure you want to delete the group "${group.name}"?`);
+    const confirmDelete = confirm(
+      `Are you sure you want to delete the group "${group.name}"?`
+    );
     if (!confirmDelete) return;
 
     this.isLoading = true;
-    this.groupService.deleteGroup(group.id).subscribe({
+    this.groupService.deleteGroup(String(group.id)).subscribe({
       next: () => {
-        this.groups = this.groups.filter(g => g.id !== group.id);
+        this.groups = this.groups.filter((g) => g.id !== group.id);
         this.isLoading = false;
       },
       error: (error: HttpErrorResponse) => {
         this.errorMessage = error.error?.message || 'Failed to delete group';
         this.isLoading = false;
-      }
+      },
     });
   }
 
@@ -280,8 +300,8 @@ export class GroupsComponent implements OnInit {
 
   // Utility method to safely access group properties
   safeGroupProperty<K extends keyof Group>(
-    group: Group | null | undefined, 
-    property: K, 
+    group: Group | null | undefined,
+    property: K,
     defaultValue: Group[K] = '' as Group[K]
   ): Group[K] {
     // Use type-safe null check
@@ -300,7 +320,7 @@ export class GroupsComponent implements OnInit {
   }
 
   get safeGroups(): Group[] {
-    return this.groups.filter(group => !isNil(group));
+    return this.groups.filter((group) => !isNil(group));
   }
 
   get hasGroups(): boolean {
@@ -309,11 +329,17 @@ export class GroupsComponent implements OnInit {
 
   get nameErrors(): boolean {
     const nameControl = this.groupForm.get('name');
-    return !!(nameControl?.invalid && (nameControl?.dirty || nameControl?.touched));
+    return !!(
+      nameControl?.invalid &&
+      (nameControl?.dirty || nameControl?.touched)
+    );
   }
 
   get descriptionErrors(): boolean {
     const descriptionControl = this.groupForm.get('description');
-    return !!(descriptionControl?.invalid && (descriptionControl?.dirty || descriptionControl?.touched));
+    return !!(
+      descriptionControl?.invalid &&
+      (descriptionControl?.dirty || descriptionControl?.touched)
+    );
   }
 }

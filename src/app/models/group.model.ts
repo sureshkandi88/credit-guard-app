@@ -1,5 +1,5 @@
 export interface Debt {
-  id?: string;
+  id: number;
   amount: number;
 }
 
@@ -14,14 +14,15 @@ export interface Customer {
 }
 
 export interface EmiTransaction {
-  id?: string;
+  id: number;
   amount: number;
 }
 
 export interface Group {
-  id?: string;
+  id: number;
   name: string;
   description?: string;
+  location: string;
   memberCount?: number;
   createdAt?: Date | string;
   updatedAt?: Date | string;
@@ -34,16 +35,46 @@ export interface Group {
 
 export interface GroupCreateDto {
   name: string;
-  description?: string;
-  debts?: Debt[];
-  customerGroups?: CustomerGroup[];
-  activeCustomers?: Customer[];
-  emiTransactions?: EmiTransaction[];
+  description: string;
+  isActive: boolean;
+  location: string;
+  customerGroups: CustomerGroupDto[];
+  debts: DebtDto[];
+  activeCustomers: Customer[];
+  emiTransactions: EmiTransactionDto[];
+}
+
+export interface CustomerGroupDto {
+  customerId: number;
+  joinedAt: Date;
+  isActive: boolean;
+}
+
+export interface DebtDto {
+  totalAmount: number;
+  remainingAmount: number;
+  totalEMICount: number;
+  emiAmount: number;
+  status: number;
+  startDate: Date;
+  endDate: Date;
+}
+
+export interface EmiTransactionDto {
+  debtId: number;
+  customerId: number;
+  emiNumber: number;
+  emiAmount: number;
+  status: number;
+  dueDate: Date;
+  paidDate: Date;
+  paidAmount: number;
 }
 
 export interface GroupUpdateDto {
   name?: string;
   description?: string;
+  location?: string;
   isActive?: boolean;
   debts?: Debt[];
   customerGroups?: CustomerGroup[];

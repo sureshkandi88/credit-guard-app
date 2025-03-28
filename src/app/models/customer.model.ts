@@ -1,22 +1,20 @@
 export interface Customer {
-  id: number;
+  id?: number;
   firstName: string;
   lastName?: string;
   phoneNumber: string;
   aadhaarNumber: string;
   street: string;
-  city: string;
+  cityName: string;
   state: string;
   location?: string;
-  profilePhotoPath?: string;
-  aadhaarPhotoPath?: string;
+  profilePictureId?: string | null;
+  aadhaarPictureId?: string | null;
   isActive: boolean;
-  createdAt?: Date;
-  updatedAt?: Date;
-  activeGroupId?: number;
-  activeGroup?: Group;
-  customerGroups?: CustomerGroup[];
-  emiTransactions?: EmiTransaction[];
+  activeGroupId?: number | null;
+  activeGroup?: Group | null;
+  customerGroups?: CustomerGroup[] | null;
+  emiTransactions?: EmiTransaction[] | null;
   fullAddress?: string;
 }
 
@@ -26,11 +24,11 @@ export interface CustomerCreateDto {
   phoneNumber: string;
   aadhaarNumber: string;
   street: string;
-  city: string;
+  cityName: string;
   state: string;
-  location?: string;
-  profilePhoto?: File | null;
-  aadhaarPhoto?: File | null;
+  location: string;
+  profilePhoto: File | null;
+  aadhaarPhoto: File | null;
 }
 
 export interface CustomerUpdateDto {
@@ -40,7 +38,7 @@ export interface CustomerUpdateDto {
   phoneNumber?: string;
   aadhaarNumber?: string;
   street?: string;
-  city?: string;
+  cityName?: string;
   state?: string;
   location?: string;
   profilePhoto?: File | null;
@@ -65,7 +63,7 @@ export interface CustomerPaginatedResponse {
 }
 
 export interface Group {
-  id: number;
+  id: string;
   name: string;
   description?: string;
   createdAt: Date;
@@ -75,7 +73,7 @@ export interface Group {
 }
 
 export interface EmiTransaction {
-  id: number;
+
   debtId: number;
   debt?: Debt;
   customerId: number;
@@ -94,7 +92,7 @@ export enum EmiTransactionStatus {
   Pending = 0,
   Paid = 1,
   Overdue = 2,
-  Cancelled = 3
+  Cancelled = 3,
 }
 
 export interface Debt {
@@ -116,11 +114,11 @@ export enum DebtStatus {
   Pending = 0,
   Active = 1,
   Completed = 2,
-  Defaulted = 3
+  Defaulted = 3,
 }
 
 export enum CustomerStatus {
   Active = 'Active',
   Inactive = 'Inactive',
-  Suspended = 'Suspended'
+  Suspended = 'Suspended',
 }

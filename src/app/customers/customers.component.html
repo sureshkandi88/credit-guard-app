@@ -6,11 +6,7 @@
           <h1>Customers</h1>
           <div class="header-actions">
             <div class="input-group mb-3">
-              <input 
-                type="text" 
-                class="form-control" 
-                placeholder="Search customers..." 
-                [(ngModel)]="searchQuery"
+              <input type="text" class="form-control" placeholder="Search customers..." [(ngModel)]="searchQuery"
                 (input)="searchCustomers()">
               <button class="btn btn-primary" (click)="openAddCustomerModal(customerModal)">
                 <i class="bi bi-plus-circle"></i> Add Customer
@@ -48,21 +44,20 @@
                 <p class="card-text">
                   <strong>Phone:</strong> {{ customer.phoneNumber }}<br>
                   <strong>Aadhaar:</strong> {{ customer.aadhaarNumber }}<br>
-                  <strong>Address:</strong> 
-                  {{ customer.street }}, 
-                  {{ customer.city }}, 
+                  <strong>Address:</strong>
+                  {{ customer.street }},
+                  {{ customer.cityName }},
                   {{ customer.state }}
                   <span *ngIf="customer.location">
                     ({{ customer.location }})
                   </span>
                 </p>
                 <div class="card-actions">
-                  <button class="btn btn-sm btn-outline-primary" 
-                          (click)="openEditCustomerModal(customer, customerModal)">
+                  <button class="btn btn-sm btn-outline-primary"
+                    (click)="openEditCustomerModal(customer, customerModal)">
                     <i class="bi bi-pencil"></i> Edit
                   </button>
-                  <button class="btn btn-sm btn-outline-danger" 
-                          (click)="deleteCustomer(customer.id)">
+                  <button class="btn btn-sm btn-outline-danger" (click)="deleteCustomer(customer.id)">
                     <i class="bi bi-trash"></i> Delete
                   </button>
                 </div>
@@ -73,10 +68,7 @@
 
         <!-- Pagination -->
         <div *ngIf="totalCustomers > pageSize" class="pagination-container">
-          <ngb-pagination 
-            [collectionSize]="totalCustomers"
-            [(page)]="currentPage"
-            [pageSize]="pageSize"
+          <ngb-pagination [collectionSize]="totalCustomers" [(page)]="currentPage" [pageSize]="pageSize"
             (pageChange)="onPageChange($event)">
           </ngb-pagination>
         </div>
@@ -94,9 +86,10 @@
               <div class="row">
                 <div class="col-md-6 mb-3">
                   <label for="firstName" class="form-label">First Name *</label>
-                  <input type="text" class="form-control" id="firstName" formControlName="firstName" 
-                         [ngClass]="{'is-invalid': customerForm.get('firstName')?.invalid && customerForm.get('firstName')?.touched}">
-                  <div *ngIf="customerForm.get('firstName')?.invalid && customerForm.get('firstName')?.touched" class="invalid-feedback">
+                  <input type="text" class="form-control" id="firstName" formControlName="firstName"
+                    [ngClass]="{'is-invalid': customerForm.get('firstName')?.invalid && customerForm.get('firstName')?.touched}">
+                  <div *ngIf="customerForm.get('firstName')?.invalid && customerForm.get('firstName')?.touched"
+                    class="invalid-feedback">
                     {{ getErrorMessage('firstName') }}
                   </div>
                 </div>
@@ -108,17 +101,19 @@
               <div class="row">
                 <div class="col-md-6 mb-3">
                   <label for="phoneNumber" class="form-label">Phone Number *</label>
-                  <input type="tel" class="form-control" id="phoneNumber" formControlName="phoneNumber" 
-                         [ngClass]="{'is-invalid': customerForm.get('phoneNumber')?.invalid && customerForm.get('phoneNumber')?.touched}">
-                  <div *ngIf="customerForm.get('phoneNumber')?.invalid && customerForm.get('phoneNumber')?.touched" class="invalid-feedback">
+                  <input type="tel" class="form-control" id="phoneNumber" formControlName="phoneNumber"
+                    [ngClass]="{'is-invalid': customerForm.get('phoneNumber')?.invalid && customerForm.get('phoneNumber')?.touched}">
+                  <div *ngIf="customerForm.get('phoneNumber')?.invalid && customerForm.get('phoneNumber')?.touched"
+                    class="invalid-feedback">
                     {{ getErrorMessage('phoneNumber') }}
                   </div>
                 </div>
                 <div class="col-md-6 mb-3">
                   <label for="aadhaarNumber" class="form-label">Aadhaar Number *</label>
-                  <input type="text" class="form-control" id="aadhaarNumber" formControlName="aadhaarNumber" 
-                         [ngClass]="{'is-invalid': customerForm.get('aadhaarNumber')?.invalid && customerForm.get('aadhaarNumber')?.touched}">
-                  <div *ngIf="customerForm.get('aadhaarNumber')?.invalid && customerForm.get('aadhaarNumber')?.touched" class="invalid-feedback">
+                  <input type="text" class="form-control" id="aadhaarNumber" formControlName="aadhaarNumber"
+                    [ngClass]="{'is-invalid': customerForm.get('aadhaarNumber')?.invalid && customerForm.get('aadhaarNumber')?.touched}">
+                  <div *ngIf="customerForm.get('aadhaarNumber')?.invalid && customerForm.get('aadhaarNumber')?.touched"
+                    class="invalid-feedback">
                     {{ getErrorMessage('aadhaarNumber') }}
                   </div>
                 </div>
@@ -126,17 +121,19 @@
               <div class="row">
                 <div class="col-md-6 mb-3">
                   <label for="street" class="form-label">Street *</label>
-                  <input type="text" class="form-control" id="street" formControlName="street" 
-                         [ngClass]="{'is-invalid': customerForm.get('street')?.invalid && customerForm.get('street')?.touched}">
-                  <div *ngIf="customerForm.get('street')?.invalid && customerForm.get('street')?.touched" class="invalid-feedback">
+                  <input type="text" class="form-control" id="street" formControlName="street"
+                    [ngClass]="{'is-invalid': customerForm.get('street')?.invalid && customerForm.get('street')?.touched}">
+                  <div *ngIf="customerForm.get('street')?.invalid && customerForm.get('street')?.touched"
+                    class="invalid-feedback">
                     {{ getErrorMessage('street') }}
                   </div>
                 </div>
                 <div class="col-md-6 mb-3">
                   <label for="city" class="form-label">City *</label>
-                  <input type="text" class="form-control" id="city" formControlName="city" 
-                         [ngClass]="{'is-invalid': customerForm.get('city')?.invalid && customerForm.get('city')?.touched}">
-                  <div *ngIf="customerForm.get('city')?.invalid && customerForm.get('city')?.touched" class="invalid-feedback">
+                  <input type="text" class="form-control" id="city" formControlName="city"
+                    [ngClass]="{'is-invalid': customerForm.get('city')?.invalid && customerForm.get('city')?.touched}">
+                  <div *ngIf="customerForm.get('city')?.invalid && customerForm.get('city')?.touched"
+                    class="invalid-feedback">
                     {{ getErrorMessage('city') }}
                   </div>
                 </div>
@@ -144,9 +141,10 @@
               <div class="row">
                 <div class="col-md-6 mb-3">
                   <label for="state" class="form-label">State *</label>
-                  <input type="text" class="form-control" id="state" formControlName="state" 
-                         [ngClass]="{'is-invalid': customerForm.get('state')?.invalid && customerForm.get('state')?.touched}">
-                  <div *ngIf="customerForm.get('state')?.invalid && customerForm.get('state')?.touched" class="invalid-feedback">
+                  <input type="text" class="form-control" id="state" formControlName="state"
+                    [ngClass]="{'is-invalid': customerForm.get('state')?.invalid && customerForm.get('state')?.touched}">
+                  <div *ngIf="customerForm.get('state')?.invalid && customerForm.get('state')?.touched"
+                    class="invalid-feedback">
                     {{ getErrorMessage('state') }}
                   </div>
                 </div>
@@ -158,8 +156,8 @@
               <div class="row">
                 <div class="col-md-6 mb-3">
                   <label for="profilePhoto" class="form-label">Profile Photo</label>
-                  <input type="file" class="form-control" id="profilePhoto" formControlName="profilePhoto" 
-                         (change)="onFileChange($event, 'profilePhoto')">
+                  <input type="file" class="form-control" id="profilePhoto" formControlName="profilePhoto"
+                    (change)="onFileChange($event, 'profilePhoto')">
                   <div *ngIf="customerForm.get('profilePhoto')?.hasError('invalidType')" class="text-danger">
                     Invalid file type. Only JPEG, PNG, and GIF are allowed.
                   </div>
@@ -169,8 +167,8 @@
                 </div>
                 <div class="col-md-6 mb-3">
                   <label for="aadhaarPhoto" class="form-label">Aadhaar Photo</label>
-                  <input type="file" class="form-control" id="aadhaarPhoto" formControlName="aadhaarPhoto" 
-                         (change)="onFileChange($event, 'aadhaarPhoto')">
+                  <input type="file" class="form-control" id="aadhaarPhoto" formControlName="aadhaarPhoto"
+                    (change)="onFileChange($event, 'aadhaarPhoto')">
                   <div *ngIf="customerForm.get('aadhaarPhoto')?.hasError('invalidType')" class="text-danger">
                     Invalid file type. Only JPEG, PNG, and GIF are allowed.
                   </div>
@@ -181,8 +179,7 @@
               </div>
               <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" (click)="modal.dismiss()">Cancel</button>
-                <button type="submit" class="btn btn-primary" 
-                        [disabled]="customerForm.invalid || isLoading">
+                <button type="submit" class="btn btn-primary" [disabled]="customerForm.invalid || isLoading">
                   {{ isEditMode ? 'Update' : 'Create' }} Customer
                 </button>
               </div>

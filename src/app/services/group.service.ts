@@ -16,21 +16,8 @@ export interface CustomerGroup {
   isActive: boolean;
 }
 
-export interface Customer {
-  id?: number;
-  firstName: string;
-  lastName?: string | null;
-  aadhaarNumber: string;
-  phoneNumber?: string | null;
-}
+import { Customer, Debt } from '../models/customer.model';
 
-export interface Debt {
-  id?: number;
-  groupId: number;
-  group?: Group;
-  totalAmount: number;
-  remainingAmount?: number;
-}
 
 export interface EmiTransaction {
   id?: number;
@@ -115,7 +102,7 @@ export class GroupService {
         }
 
         // Rethrow the error after logging
-        return throwError(() => new Error('Failed to fetch groups. Please log in again.'));
+        return throwError(() => new Error(error.error?.message || 'Group creation failed. Please check your input data.'));
       })
     );
   }
@@ -139,9 +126,7 @@ export class GroupService {
     // Add more fields if required by the backend
     const fullPayload = {
       ...group,
-      isActive: true, // Default active status
-      createdBy: this.authService.getCurrentUserId(), // Add user ID if needed
-      tenantId: this.authService.getTenantId() // Add tenant ID if multi-tenant
+      isActive: group.isActive // Use value from DTO
     };
 
     return this.http.post<Group>(this.apiUrl, fullPayload, {
@@ -177,10 +162,10 @@ export class GroupService {
   }
 
   // Update an existing group with enhanced error handling
-  updateGroup(id: string, group: GroupUpdateDto): Observable<Group> {
-    console.log(`Updating group ${id} with payload:`, JSON.stringify(group));
+  updateGroup(id: string, updateData: any): Observable<Group> {
+    console.log(`Updating group ${id} with payload:`, JSON.stringify(updateData));
     
-    return this.http.put<Group>(`${this.apiUrl}/${id}`, group, {
+    return this.http.put<Group>(`${this.apiUrl}/${id}`, updateData, {
       headers: this.getAuthHeaders(),
       observe: 'response'
     }).pipe(

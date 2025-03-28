@@ -1,21 +1,24 @@
 @use "../../styles/variables" as vars;
 
 :host {
-  display: block;
-  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  min-height: 100vh;
   width: 100vw;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   overflow: hidden;
-  position: fixed;
-  top: 0;
-  left: 0;
-  margin: 0;
-  padding: 0;
-  background-color: #f4f6f9;
+  padding: 20px;
+  box-sizing: border-box;
 }
 
 .groups-container {
-  position: relative;
-  height: 100vh;
+  width: 100%;
+  max-width: 1200px;
+  background-color: white;
+  border-radius: 12px;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
   display: flex;
   flex-direction: column;
 }
@@ -23,7 +26,7 @@
 .groups-content {
   flex-grow: 1;
   padding: 40px;
-  background-color: #f4f6f9;
+  background-color: white;
   overflow-y: auto;
 
   .content-header {
