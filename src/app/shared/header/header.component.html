@@ -5,9 +5,9 @@
   <span class="title">Credit Guard</span>
   <span class="spacer"></span>
   <nav class="desktop-nav" *ngIf="!(isHandset$ | async)">
-    <a mat-button routerLink="/dashboard" routerLinkActive="active">
-      <mat-icon>dashboard</mat-icon>
-      <span>Dashboard</span>
+    <a mat-button routerLink="/home" routerLinkActive="active">
+      <mat-icon>home</mat-icon>
+      <span>Home</span>
     </a>
     <a mat-button routerLink="/customers" routerLinkActive="active">
       <mat-icon>people</mat-icon>
@@ -35,9 +35,9 @@
 <mat-sidenav-container class="sidenav-container">
   <mat-sidenav #sidenav mode="over" [fixedInViewport]="true" [opened]="false">
     <mat-nav-list>
-      <a mat-list-item routerLink="/dashboard" routerLinkActive="active" (click)="sidenav.close()">
-        <mat-icon>dashboard</mat-icon>
-        <span>Dashboard</span>
+      <a mat-list-item routerLink="/home" routerLinkActive="active" (click)="sidenav.close()">
+        <mat-icon>home</mat-icon>
+        <span>Home</span>
       </a>
       <a mat-list-item routerLink="/customers" routerLinkActive="active" (click)="sidenav.close()">
         <mat-icon>people</mat-icon>
