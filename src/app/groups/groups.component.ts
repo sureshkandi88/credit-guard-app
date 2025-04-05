@@ -23,7 +23,6 @@ import { isNil } from '../shared/utils/is-nil.util';
     FormsModule,
     ReactiveFormsModule,
     NgbPaginationModule,
-    HeaderComponent,
   ],
   templateUrl: './groups.component.html',
   styleUrls: ['./groups.component.scss'],
